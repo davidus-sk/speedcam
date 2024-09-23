@@ -1,0 +1,15 @@
+{
+	"left": {
+		"radar":"caf7046f9e9ce71199f53f1db5604391",
+		"camera":0,
+		"speed_limit": 48.2
+	},
+	"right": {
+		"radar":"bc97133bbe9ce711a45a3f1db5604391",
+		"camera":1,
+		"speed_limit": 48.2
+	},
+	"camera": {
+		"url":"http://10.225.5.2/stw-cgi/video.cgi?msubmenu=snapshot&action=view&Channel="
+	}
+}
