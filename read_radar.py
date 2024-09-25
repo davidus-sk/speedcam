@@ -7,13 +7,19 @@ import time
 import json
 import os
 import fcntl
+from pathlib import Path
 
-# need to have serial port
+# need to have serial port and radar id
 if len(sys.argv) < 3:
 	sys.exit()
 
+# start up variables
+tty = sys.argv[1]
+radar = sys.argv[2]
+Path(f"/dev/shm/{radar}.top").touch()
+
 # only run once
-lock_file_pointer = os.open(f"/tmp/read_radar_{sys.argv[2]}.pid", os.O_WRONLY | os.O_CREAT)
+lock_file_pointer = os.open(f"/tmp/read_radar_{radar}.pid", os.O_WRONLY | os.O_CREAT)
 
 try:
 	fcntl.lockf(lock_file_pointer, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -38,36 +44,41 @@ with open(config_file) as f:
 
 # find this radar in config
 for v in config:
-	if "radar" in config[v] and config[v]["radar"] == sys.argv[2]:
+	if "radar" in config[v] and config[v]["radar"] == radar:
 		camera = config[v]["camera"]
 		direction = v
 
 if camera is None or direction is None:
-	syslog.syslog(syslog.LOG_ERR, f"No valid camera and direction found for radar {sys.argv[2]}. Quitting...")
+	syslog.syslog(syslog.LOG_ERR, f"No valid camera and direction found for radar {radar}. Quitting...")
 
 # open port
-ser = serial.Serial(sys.argv[1], 38400, timeout=1)
+ser = serial.Serial(tty, 38400, timeout=1)
 
 if not ser.is_open:
-	syslog.syslog(syslog.LOG_ERR, f"Failed to open {sys.argv[1]}. Quitting...")
+	syslog.syslog(syslog.LOG_ERR, f"Failed to open {tty}. Quitting...")
 	sys.exit()
 
-syslog.syslog(syslog.LOG_INFO, f"Port {sys.argv[1]} was opened for radar {sys.argv[2]}.")
+syslog.syslog(syslog.LOG_INFO, f"Port {tty} was opened for radar {radar}.")
 
 # flush buffers
 ser.flushInput()
 ser.flushOutput()
 
 while True:
+	# get speed command
 	ser.write("$C01\r".encode())
+
+	# rest a bit
 	time.sleep(0.05)
+
+	# get speed, direction, and magnitude
 	read_data = ser.readline()
 	data = read_data.decode()
 	items = data.split(";")
 
 	if len(items) == 5:
-		speed_away = int(items[0]) * 5120 / 256 / 44.7 / 1
-		speed_towards = int(items[1]) * 5120 / 256 / 44.7 / 1
+		speed_away = round(int(items[0]) * 5120 / 256 / 44.7 / 1, 2)
+		speed_towards = round(int(items[1]) * 5120 / 256 / 44.7 / 1, 2)
 
 		# speeder detected
 		# look at the radar that sees the car approaching
@@ -75,16 +86,28 @@ while True:
 			syslog.syslog(syslog.LOG_INFO, f"Overspeed detected: {speed_towards} km/h.")
 
 			# create new detection
-			os.system(f"/app/speed/create_detection.py {sys.argv[2]} {speed_towards} > /dev/null 2>&1 &");
+			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} > /dev/null 2>&1 &");
 
 			# flashers
 			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &");
 
+		# debug
 		print(f"To {speed_away} km/h :: From {speed_towards} km/h")
 
-		with open(f"/dev/shm/{sys.argv[2]}.speed", 'wb') as f:
-			f.write(str(speed_towards).encode())
+		# record current speed
+		with open(f"/dev/shm/{radar}.speed", 'w') as f:
+			f.write(str(speed_towards))
 
+		# record top speed
+		with open(f"/dev/shm/{radar}.top", 'r+') as f:
+			speed_top = f.readline()
+
+			if not speed_top.strip() or float(speed_top) < speed_towards:
+				f.seek(0)
+				f.write(str(speed_towards))
+				f.truncate()
+
+	# rest
 	time.sleep(0.05)
 
 ser.close()

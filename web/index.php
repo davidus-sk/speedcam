@@ -12,6 +12,8 @@ $image_left = ['ts'=>0, 'name'=>null];
 $image_right = ['ts'=>0, 'name'=>null];
 $speed_left = file_get_contents("/dev/shm/{$conf['left']['radar']}.speed");
 $speed_right = file_get_contents("/dev/shm/{$conf['right']['radar']}.speed");
+$top_speed_left = file_get_contents("/dev/shm/{$conf['left']['radar']}.top");
+$top_speed_right = file_get_contents("/dev/shm/{$conf['right']['radar']}.top");
 
 foreach (glob("/dev/shm/frames/0_*.jpg") as $filename) {
 	if ($image_left['ts'] < filemtime($filename)) {
@@ -50,6 +52,7 @@ foreach (glob("/dev/shm/frames/1_*.jpg") as $filename) {
 					<p>Channel number: <?php echo $conf["left"]["camera"]; ?></p>
 					<p>Radar serial: <?php echo $conf["left"]["radar"]; ?></p>
 					<p>Speed limit: <?php echo $conf["left"]["speed_limit"]; ?> km/h</p>
+					<p>Top speed: <?php echo $top_speed_left; ?> km/h</p>
 					<p>Curent speed: <?php echo $speed_left; ?> km/h</p>
 				</div>
 			</div>
@@ -65,6 +68,7 @@ foreach (glob("/dev/shm/frames/1_*.jpg") as $filename) {
 					<p>Channel number: <?php echo $conf["right"]["camera"]; ?></p>
 					<p>Radar serial: <?php echo $conf["right"]["radar"]; ?></p>
 					<p>Speed limit: <?php echo $conf["right"]["speed_limit"]; ?> km/h</p>
+					<p>Top speed: <?php echo $top_speed_right; ?> km/h</p>
 					<p>Curent speed: <?php echo $speed_right; ?> km/h</p>
 				</div>
 			</div>
