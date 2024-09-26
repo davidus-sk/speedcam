@@ -30,7 +30,7 @@ def save_file_with_digest_auth(url, username, password, filename):
 
 	# Download the file
 	with open(filename, 'wb') as f:
-		response = urllib.request.urlopen(url)
+		response = urllib.request.urlopen(url, timeout=8)
 		f.write(response.read())
 
 # need to have serial port
