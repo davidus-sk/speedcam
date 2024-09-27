@@ -31,7 +31,7 @@ foreach (glob("/dev/shm/frames/1_*.jpg") as $filename) {
 
 // get network info
 $modem = `/usr/bin/mmcli -m 1`;
-$items = ['tech' => 'access tech: ([a-z0-9]+)', 'signal' => 'signal quality: ([a-z0-9]+)%', 'operator' => 'operator name: ([a-z0-9]+)'];
+$items = ['tech' => 'access tech: ([a-z0-9]+)', 'signal' => 'signal quality: ([a-z0-9]+)%', 'operator' => 'operator name: ([a-z0-9-]+)'];
 $cell = ['tech' => null, 'signal' => null, 'operator' => null];
 foreach($items as $i => $item) {
 	if(preg_match("/$item/i", $modem, $m)) {
@@ -50,11 +50,11 @@ foreach($items as $i => $item) {
 	<div class="w3-container w3-blue">
 		<div class="w3-col m6">
 			<div class="w3-col m6">
-				<h1>Speed Camera</h1>
+				<p><b>Speed Camera</b></p>
 				<p>Deerwoord</p>
 			</div>
 			<div class="w3-col m6">
-				<?php var_dump($cell); ?>
+				<?php echo $cell['operator'] . ' (' . strtoupper($cell['tech']) . ' - ' . $cell['signal'] . '%)'; ?>
 			</div>
 		</div>
 	</div>
