@@ -1,4 +1,5 @@
 <?php
+// load up system config
 $config_file = "/app/speed/config.json";
 $conf = [];
 
@@ -8,6 +9,7 @@ if (file_exists($config_file)) {
 	}//if
 }//if
 
+// get camera and radar data
 $image_left = ['ts'=>0, 'name'=>null];
 $image_right = ['ts'=>0, 'name'=>null];
 $speed_left = file_get_contents("/dev/shm/{$conf['left']['radar']}.speed");
@@ -26,6 +28,17 @@ foreach (glob("/dev/shm/frames/1_*.jpg") as $filename) {
 		$image_right = ['ts'=>filemtime($filename), 'name'=>basename($filename)];
 	}//if
 }//foreach
+
+// get network info
+$modem = `/usr/bin/mmcli -m 1`;
+$items = ['tech' => 'access tech: ([a-z0-9]+)', 'signal' => 'signal quality: ([a-z0-9]+)%', 'operator' => 'operator name: ([a-z0-9]+)'];
+$cell = ['tech' => null, 'signal' => null, 'operator' => null];
+foreach($items as $i => $item) {
+	if(preg_match("/$item/i", $modem, $m)) {
+		$cell[$i] = $m[1];
+	}//if
+}//foreach
+
 ?>
 
 <!DOCTYPE html>
@@ -35,8 +48,15 @@ foreach (glob("/dev/shm/frames/1_*.jpg") as $filename) {
 	<body>
 
 	<div class="w3-container w3-blue">
-		<h1>Speed Camera</h1>
-		<p>Deerwoord</p>
+		<div class="w3-col m6">
+			<div class="w3-col m6">
+				<h1>Speed Camera</h1>
+				<p>Deerwoord</p>
+			</div>
+			<div class="w3-col m6">
+				<?php var_dump($cell); ?>
+			</div>
+		</div>
 	</div>
 
 
