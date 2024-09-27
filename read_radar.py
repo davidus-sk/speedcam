@@ -55,7 +55,7 @@ if camera is None or direction is None:
 ser = serial.Serial(tty, 38400, timeout=1)
 
 if not ser.is_open:
-	syslog.syslog(syslog.LOG_ERR, f"Failed to open {tty}. Quitting...")
+	syslog.syslog(syslog.LOG_ERR, f"Failed to open {tty} for radar {radar}. Quitting...")
 	sys.exit()
 
 syslog.syslog(syslog.LOG_INFO, f"Port {tty} was opened for radar {radar}.")
@@ -93,7 +93,7 @@ while True:
 		# speeder detected
 		# look at the radar that sees the car approaching
 		if speed_towards >= config[direction]["speed_limit"]:
-			syslog.syslog(syslog.LOG_INFO, f"Overspeed detected: {speed_towards} km/h.")
+			syslog.syslog(syslog.LOG_INFO, f"Overspeed {speed_towards} km/h detected on radar {radar}.")
 
 			# create new detection
 			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} > /dev/null 2>&1 &");
