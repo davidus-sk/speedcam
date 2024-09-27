@@ -4,6 +4,7 @@ import time
 import sys
 import os
 import syslog
+import requests
 
 # need to have input
 if len(sys.argv) < 3:
@@ -33,7 +34,6 @@ for v in config:
 		camera = config[v]["camera"]
 		direction = v
 
-
 data = {"ts": time.time(), "radar":radar, "speed":speed, "direction":direction, "camera":camera}
 
 # write to file
@@ -42,3 +42,17 @@ syslog.syslog(syslog.LOG_ERR, f"Logging detection to file {filename}.")
 
 with open("/dev/shm/" + filename, 'w', encoding='utf-8') as f:
 	json.dump(data, f, ensure_ascii=False, indent=4)
+
+# post detection to server
+multipart_form_data = (
+	('image1', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
+	('image2', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
+	('ts', (None, data["ts"])),
+	('radar', (None, data["radar"])),
+	('speed', (None, data["speed"])),
+	('direction', (None, data["direction"])),
+	('camera', (None, data["camera"])),
+)
+
+syslog.syslog(syslog.LOG_ERR, f"Logging detection to URL {config["settings"]["url"]}.")
+response = requests.post(config["settings"]["url"], files=multipart_form_data)
