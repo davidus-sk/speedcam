@@ -29,16 +29,20 @@ foreach (glob("/dev/shm/frames/1_*.jpg") as $filename) {
 	}//if
 }//foreach
 
-// get network info
-$modem = `/usr/bin/mmcli -m 1`;
-$items = ['tech' => 'access tech: ([a-z0-9]+)', 'signal' => 'signal quality: ([a-z0-9]+)%', 'operator' => 'operator name: ([a-z0-9-]+)'];
-$cell = ['tech' => null, 'signal' => null, 'operator' => null];
-foreach($items as $i => $item) {
-	if(preg_match("/$item/i", $modem, $m)) {
-		$cell[$i] = $m[1];
-	}//if
-}//foreach
+// get modem ID and network info
+$modem_id = `/usr/bin/mmcli -L`;
 
+if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
+	$modem = `/usr/bin/mmcli -m {$m[1]}`;
+	$items = ['tech' => 'access tech: ([a-z0-9]+)', 'signal' => 'signal quality: ([a-z0-9]+)%', 'operator' => 'operator name: ([a-z0-9-]+)'];
+	$cell = ['tech' => null, 'signal' => null, 'operator' => null];
+	foreach($items as $i => $item) {
+		if(preg_match("/$item/i", $modem, $m)) {
+			$cell[$i] = $m[1];
+		}//if
+	}//foreach
+}//if
+	
 ?>
 
 <!DOCTYPE html>
