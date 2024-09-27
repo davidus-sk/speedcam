@@ -54,7 +54,8 @@ foreach($items as $i => $item) {
 				<p>Deerwoord</p>
 			</div>
 			<div class="w3-col m6">
-				<?php echo $cell['operator'] . ' (' . strtoupper($cell['tech']) . ' - ' . $cell['signal'] . '%)'; ?>
+				<p><?php echo $cell['operator'] . ' (' . strtoupper($cell['tech']) . ' - ' . $cell['signal'] . '%)'; ?></p>
+				<p><?php echo gethostname(); ?></p>
 			</div>
 		</div>
 	</div>
