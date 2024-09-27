@@ -1,10 +1,20 @@
 #!/usr/bin/python3
+
+# #############################################################
+# Speed camera system - detection creation
+# Triggered by high speed detection via read_radar.py
+# Pools data together, finds images, sends to upstream server
+# #############################################################
+
+# libraries
 import json
 import time
 import sys
 import os
 import syslog
 import requests
+import glob
+import re
 
 # need to have input
 if len(sys.argv) < 3:
@@ -38,10 +48,14 @@ data = {"ts": time.time(), "radar":radar, "speed":speed, "direction":direction, 
 
 # write to file
 filename = "d_" + str(time.time()) + ".json"
-syslog.syslog(syslog.LOG_ERR, f"Logging detection to file {filename}.")
+syslog.syslog(syslog.LOG_DEBUG, f"Logging detection to file {filename} for radar {radar}.")
 
 with open("/dev/shm/" + filename, 'w', encoding='utf-8') as f:
 	json.dump(data, f, ensure_ascii=False, indent=4)
+
+# find the closest image
+for name in glob.glob(f"/dev/shm/frames/{camera}_*"):
+	image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
 
 # post detection to server
 multipart_form_data = (
@@ -54,5 +68,5 @@ multipart_form_data = (
 	('camera', (None, data["camera"])),
 )
 
-syslog.syslog(syslog.LOG_ERR, f"Logging detection to URL {config["settings"]["url"]}.")
+syslog.syslog(syslog.LOG_INFO, f"Logging detection to URL {config["settings"]["api"]["url"]} for radar {radar}.")
 response = requests.post(config["settings"]["url"], files=multipart_form_data)
