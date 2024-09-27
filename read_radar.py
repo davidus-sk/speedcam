@@ -64,6 +64,16 @@ syslog.syslog(syslog.LOG_INFO, f"Port {tty} was opened for radar {radar}.")
 ser.flushInput()
 ser.flushOutput()
 
+# get and set some radar settings
+ser.write("$S04\r".encode())
+read_data = ser.readline()
+data = read_data.decode()
+
+syslog.syslog(syslog.LOG_INFO, f"Radar {radar} sampling rate is set to {data}.")
+
+ser.write("$S0B00\r".encode())
+ser.write("$D0101\r".encode())
+
 while True:
 	# get speed command
 	ser.write("$C01\r".encode())
