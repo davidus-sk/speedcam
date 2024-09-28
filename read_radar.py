@@ -66,8 +66,11 @@ ser.flushOutput()
 
 # get and set some radar settings
 ser.write("$S0B00\r".encode())
+read_data = ser.readline()
 ser.write("$D0100\r".encode())
+read_data = ser.readline()
 ser.write("$S0407\r".encode())
+read_data = ser.readline()
 
 ser.write("$S04\r".encode())
 read_data = ser.readline()
