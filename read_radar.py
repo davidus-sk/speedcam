@@ -65,21 +65,37 @@ ser.flushInput()
 ser.flushOutput()
 
 # get and set some radar settings
+ser.write("$S0B00\r".encode())
+ser.write("$D0100\r".encode())
+ser.write("$S0407\r".encode())
+
 ser.write("$S04\r".encode())
 read_data = ser.readline()
 data = read_data.decode()
 
 syslog.syslog(syslog.LOG_INFO, f"Radar {radar} sampling rate is set to {data}.")
 
-ser.write("$S0B00\r".encode())
-ser.write("$D0101\r".encode())
+# reset the radar
+syslog.syslog(syslog.LOG_DEBUG, f"Radar {radar} is reset.")
+ser.write("$W00\r".encode())
+
+for x in range(10):
+	ser.write("$R04\r".encode())
+	read_data = ser.readline()
+	data = read_data.decode()
+
+	if data == "@R0402":
+		syslog.syslog(syslog.LOG_DEBUG, f"Radar {radar} is back in run mode.")
+		break
+
+	time.sleep(1)
 
 while True:
 	# get speed command
 	ser.write("$C01\r".encode())
 
 	# rest a bit
-	time.sleep(0.05)
+	time.sleep(0.01)
 
 	# get speed, direction, and magnitude
 	read_data = ser.readline()
@@ -87,8 +103,8 @@ while True:
 	items = data.split(";")
 
 	if len(items) == 5:
-		speed_away = round(int(items[0]) * 5120 / 256 / 44.7 / 1, 2)
-		speed_towards = round(int(items[1]) * 5120 / 256 / 44.7 / 1, 2)
+		speed_away = round(int(items[0]) * 8960 / 256 / 44.7 / 1, 2)
+		speed_towards = round(int(items[1]) * 8960 / 256 / 44.7 / 1, 2)
 
 		# speeder detected
 		# look at the radar that sees the car approaching
@@ -118,6 +134,6 @@ while True:
 				f.truncate()
 
 	# rest
-	time.sleep(0.05)
+	time.sleep(0.02)
 
 ser.close()
