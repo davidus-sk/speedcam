@@ -1,4 +1,12 @@
 #!/usr/bin/python3
+
+# ############################################################
+# Grab images from camera via JPEG url
+# The speed is slow so this is not sufficient to capture cars
+# based on a speed trigger
+# ############################################################
+
+# include libraries
 import sys
 import os
 import fcntl
@@ -80,7 +88,7 @@ if not os.path.isdir(directory):
 
 # find this radar in config
 camera = config[direction]["camera"]
-url = config["camera"]["url"]
+url = config["settings"]["camera"]["image_url"]
 
 while True:
 	print(f"Grabbing frame")

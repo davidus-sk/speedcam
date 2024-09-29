@@ -81,11 +81,12 @@ syslog.syslog(syslog.LOG_INFO, f"Radar {radar} sampling rate is set to {data}.")
 # reset the radar
 syslog.syslog(syslog.LOG_DEBUG, f"Radar {radar} is reset.")
 ser.write("$W00\r".encode())
+read_data = ser.readline()
 
 for x in range(10):
 	ser.write("$R04\r".encode())
 	read_data = ser.readline()
-	data = read_data.decode()
+	data = read_data.decode().rstrip()
 
 	if data == "@R0402":
 		syslog.syslog(syslog.LOG_DEBUG, f"Radar {radar} is back in run mode.")

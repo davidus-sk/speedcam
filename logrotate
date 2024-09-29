@@ -3,4 +3,5 @@
 	rotate 7
 	missingok
 	ifempty
+	su root root
 }

@@ -1,3 +1,5 @@
 #* *	* * *	root	/app/speed/connect_radars.php
 * *	* * *	root	/app/speed/grab_frames.py left
 * *	* * *	root	/app/speed/grab_frames.py right
+* *	* * *	root	/app/speed/grab_frames_video.php left
+* *	* * *	root	/app/speed/grab_frames_video.php right

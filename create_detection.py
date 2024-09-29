@@ -30,6 +30,7 @@ radar = sys.argv[1]
 speed = sys.argv[2]
 camera = None
 direction = None
+ts = time.time()
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
 	syslog.syslog(syslog.LOG_ERR, f"Config file {config_file} does not exist. Quitting...")
@@ -44,17 +45,18 @@ for v in config:
 		camera = config[v]["camera"]
 		direction = v
 
-data = {"ts": time.time(), "radar":radar, "speed":speed, "direction":direction, "camera":camera}
+# create detection
+data = {"ts": ts, "radar":radar, "speed":speed, "direction":direction, "camera":camera}
 
 # write to file
-filename = "d_" + str(time.time()) + ".json"
+filename = f"d_{camera}_{ts}.json"
 syslog.syslog(syslog.LOG_DEBUG, f"Logging detection to file {filename} for radar {radar}.")
 
 with open("/dev/shm/" + filename, 'w', encoding='utf-8') as f:
 	json.dump(data, f, ensure_ascii=False, indent=4)
 
-# find the closest image
-for name in glob.glob(f"/dev/shm/frames/{camera}_*"):
+# generate images
+for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
 	image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
 
 # post detection to server
@@ -68,5 +70,5 @@ multipart_form_data = (
 	('camera', (None, data["camera"])),
 )
 
-syslog.syslog(syslog.LOG_INFO, f"Logging detection to URL {config["settings"]["api"]["url"]} for radar {radar}.")
-response = requests.post(config["settings"]["url"], files=multipart_form_data)
+syslog.syslog(syslog.LOG_INFO, f"Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.")
+response = requests.post(config["settings"]["api"]["post_url"], files=multipart_form_data)
