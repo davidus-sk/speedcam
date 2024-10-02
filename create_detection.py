@@ -60,6 +60,7 @@ for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
 	image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
 
 # post detection to server
+"""
 multipart_form_data = (
 	('image1', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
 	('image2', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
@@ -70,5 +71,6 @@ multipart_form_data = (
 	('camera', (None, data["camera"])),
 )
 
-syslog.syslog(syslog.LOG_INFO, f"Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.")
+syslog.syslog(syslog.LOG_INFO, f'Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.')
 response = requests.post(config["settings"]["api"]["post_url"], files=multipart_form_data)
+"""
