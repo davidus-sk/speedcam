@@ -45,6 +45,7 @@ config_file = "/app/speed/config.json"
 config = {}
 camera = None
 direction = None
+ts_detection = time.time()
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
 	syslog.syslog(syslog.LOG_ERR, f"Config file {config_file} does not exist. Quitting...")
