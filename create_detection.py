@@ -15,6 +15,8 @@ import syslog
 import requests
 import glob
 import re
+import sqlite3
+import datetime
 
 # need to have input
 if len(sys.argv) < 3:
@@ -31,6 +33,7 @@ speed = sys.argv[2]
 camera = None
 direction = None
 ts = time.time()
+dt = datetime.datetime.fromtimestamp(ts)
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
 	syslog.syslog(syslog.LOG_ERR, f"Config file {config_file} does not exist. Quitting...")
@@ -45,8 +48,18 @@ for v in config:
 		camera = config[v]["camera"]
 		direction = v
 
+# connecto to sqlite and create DB if it does not exist
+con = sqlite3.connect("/dev/shm/speed.db")
+cur = con.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS detections (time, month, day, hour, direction, camera, radar, speed)")
+
 # create detection
 data = {"ts": ts, "radar":radar, "speed":speed, "direction":direction, "camera":camera}
+
+# store in DB as well
+cur.execute(f'INSERT INTO detections VALUES ({ts}, {dt.month}, {dt.day}, {dt.hour}, "{direction}", {camera}, "{radar}", {speed})')
+con.commit()
+con.close()
 
 # write to file
 filename = f"d_{camera}_{ts}.json"
