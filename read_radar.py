@@ -1,5 +1,14 @@
 #!/usr/bin/python3
 
+"""
+Read speed for radar via serial interface and create detections
+Script gets data from serial radars, checks if speed is above predetermined threshold,
+turns on flashers, and creates a detection via a callback
+
+(C) 2024 LUCEON LLC
+"""
+
+# import librarie
 import sys
 import serial
 import syslog
@@ -10,6 +19,8 @@ import fcntl
 from pathlib import Path
 
 # need to have serial port and radar id
+arg 1 - serial port to connect to
+arg 2 - serial ID of the radar to work with
 if len(sys.argv) < 3:
 	sys.exit()
 
@@ -64,18 +75,26 @@ syslog.syslog(syslog.LOG_INFO, f"Port {tty} was opened for radar {radar}.")
 ser.flushInput()
 ser.flushOutput()
 
-# get and set some radar settings
+# set the radar to use onboard pot for sensitivity
+# 00 - disable pot and use digital settings
+# 01 - enable pot, pot is turned to max sensitivity
+# sensitivy in 00 mode is set via $D01
 ser.write("$S0B01\r".encode())
 read_data = ser.readline()
 #ser.write("$D0100\r".encode())
 #read_data = ser.readline()
+
+# set radar's sampling rate
+# 07 - 8960 Hz and can measure up to 100km/h
 ser.write("$S0407\r".encode())
 read_data = ser.readline()
 
+# read out the sampling rate
 ser.write("$S04\r".encode())
 read_data = ser.readline()
 data = read_data.decode()
 
+# log info
 syslog.syslog(syslog.LOG_INFO, f"Radar {radar} sampling rate is set to {data}.")
 
 # reset the radar
@@ -83,6 +102,7 @@ syslog.syslog(syslog.LOG_DEBUG, f"Radar {radar} is reset.")
 ser.write("$W00\r".encode())
 read_data = ser.readline()
 
+# check if it came online after reset
 for x in range(10):
 	ser.write("$R04\r".encode())
 	read_data = ser.readline()
@@ -94,6 +114,8 @@ for x in range(10):
 
 	time.sleep(1)
 
+# main loop
+# read speed and check against a treshold to create a detection
 while True:
 	# get speed command
 	ser.write("$C01\r".encode())
@@ -106,13 +128,23 @@ while True:
 	data = read_data.decode()
 	items = data.split(";")
 
+	# radar returns semicolon delimited data
+	# 000;000;000;000;
+	# check that we have 5 componets, the last one will be empty
 	if len(items) == 5:
+		# the 8960 value is dependent on $S04 setting
 		speed_away = round(int(items[0]) * 8960 / 256 / 44.7 / 1, 2)
 		speed_towards = round(int(items[1]) * 8960 / 256 / 44.7 / 1, 2)
 
 		# speeder detected
 		# look at the radar that sees the car approaching
-		if speed_towards >= config[direction]["speed_limit"]:
+		# if we go above the threshold and
+		# it has been at least a second since the last detection
+		# we log s valid speeder
+		if speed_towards >= config[direction]["speed_limit"] and (time.time() - ts_detection) > 1:
+			ts_detection = time.time()
+
+			# log event
 			syslog.syslog(syslog.LOG_INFO, f"Overspeed {speed_towards} km/h detected on radar {radar}.")
 
 			# create new detection
@@ -122,7 +154,7 @@ while True:
 			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &");
 
 		# debug
-		print(f"To {speed_away} km/h :: From {speed_towards} km/h")
+		#print(f"To {speed_away} km/h :: From {speed_towards} km/h")
 
 		# record current speed
 		with open(f"/dev/shm/{radar}.speed", 'w') as f:
