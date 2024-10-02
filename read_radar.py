@@ -19,8 +19,8 @@ import fcntl
 from pathlib import Path
 
 # need to have serial port and radar id
-arg 1 - serial port to connect to
-arg 2 - serial ID of the radar to work with
+# arg 1 - serial port to connect to
+# arg 2 - serial ID of the radar to work with
 if len(sys.argv) < 3:
 	sys.exit()
 
