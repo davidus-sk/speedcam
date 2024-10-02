@@ -140,9 +140,11 @@ while True:
 		# speeder detected
 		# look at the radar that sees the car approaching
 		# if we go above the threshold and
-		# it has been at least a second since the last detection
-		# we log s valid speeder
-		if speed_towards >= config[direction]["speed_limit"] and (time.time() - ts_detection) > 1:
+		# it has been at least a ts_spacing since the last detection
+		# we log a valid speeder
+		ts_spacing = (1 - (speed_towards / 100.2)) + 1
+		
+		if speed_towards >= config[direction]["speed_limit"] and (time.time() - ts_detection) > ts_spacing:
 			ts_detection = time.time()
 
 			# log event
