@@ -51,22 +51,20 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<body>
 
-	<div class="w3-container w3-blue">
-		<div class="w3-col m6">
+	<div class="w3-row-padding">
+		<div class="w3-container w3-blue w3-margin-bottom">
 			<div class="w3-col m6">
-				<p><b>Speed Camera</b></p>
-				<p>Deerwoord</p>
-			</div>
-			<div class="w3-col m6">
-				<p><?php echo $cell['operator'] . ' (' . strtoupper($cell['tech']) . ' - ' . $cell['signal'] . '%)'; ?></p>
-				<p><?php echo gethostname(); ?></p>
+				<div class="w3-col m6">
+					<p><b>Speed Camera</b></p>
+					<p>Deerwoord</p>
+				</div>
+				<div class="w3-col m6">
+					<p><?php echo $cell['operator'] . ' (' . strtoupper($cell['tech']) . ' - ' . $cell['signal'] . '%)'; ?></p>
+					<p><?php echo gethostname(); ?></p>
+				</div>
 			</div>
 		</div>
-	</div>
-
-
-	<div class="w3-row-padding">
-
+		
 		<div class="w3-col m6">
 			<div class="w3-card-4">
 				<header class="w3-container w3-blue">
