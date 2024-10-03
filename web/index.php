@@ -42,18 +42,37 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 		}//if
 	}//foreach
 }//if
-	
+
+// get SQL data
+$db = new SQLite3('/dev/shm/speed.db', SQLITE3_OPEN_READONLY);
+$cam0_results = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+$cam1_results = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+
+$cam0_day = [];
+$cam1_day = [];
+
+while ($row = $cam0_results->fetchArray()) {
+	$cam0_day[$row['hour']] = $row['cnt'];
+}
+
+while ($row = $cam1_results->fetchArray()) {
+	$cam1_day[$row['hour']] = $row['cnt'];
+}
+
+$db->close();
+
 ?>
 
 <!DOCTYPE html>
 <html>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 	<body>
 
-	<div class="w3-row-padding">
-		<div class="w3-container w3-blue w3-margin-bottom">
-			<div class="w3-col m6">
+	<div class="w3-row-padding w3-margin-bottom">
+		<div class="w3-col">
+			<div class="w3-row-padding w3-blue">
 				<div class="w3-col m6">
 					<p><b>Speed Camera</b></p>
 					<p>Deerwoord</p>
@@ -64,9 +83,11 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 				</div>
 			</div>
 		</div>
-		
+	</div>
+
+	<div class="w3-row-padding w3-margin-bottom">
 		<div class="w3-col m6">
-			<div class="w3-card-4">
+			<div class="w3-card">
 				<header class="w3-container w3-blue">
 					<h2>LEFT</h2>
 				</header>
@@ -82,7 +103,7 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 		</div>
 
 		<div class="w3-col m6">
-			<div class="w3-card-4">
+			<div class="w3-card">
 				<header class="w3-container w3-blue">
 					<h2>RIGHT</h2>
 				</header>
@@ -97,6 +118,78 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 			</div>
 		</div>
 	</div>
+
+	<div class="w3-row-padding">
+		<div class="w3-col m6">
+			<div class="w3-card">
+				<div class="w3-container">
+					<canvas id="det_0_graph" style="width:100%"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<div class="w3-col m6">
+			<div class="w3-card">
+				<div class="w3-container">
+					<canvas id="det_1_graph" style="width:100%"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<script>
+const det_0_x = <?php echo json_encode(array_keys($cam0_day)); ?>;
+const det_0_y = <?php echo json_encode(array_values($cam0_day)); ?>;
+
+const det_1_x = <?php echo json_encode(array_keys($cam1_day)); ?>;
+const det_1_y = <?php echo json_encode(array_values($cam1_day)); ?>;
+
+new Chart("det_0_graph", {
+  type: "bar",
+  data: {
+    labels: det_0_x,
+    datasets: [{
+      data: det_0_y
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: false,
+      text: "World Wine Production 2018"
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false // Disables grid lines on the x-axis
+        }
+      }],
+      y: {
+        grid: {
+          display: false // Disables grid lines on the y-axis
+        }
+      }
+    }
+  }
+});
+
+new Chart("det_1_graph", {
+  type: "bar",
+  data: {
+    labels: det_1_x,
+    datasets: [{
+      data: det_1_y
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: false,
+      text: "World Wine Production 2018"
+    }
+  }
+});
+</script>
 
 	</body>
 </html>
