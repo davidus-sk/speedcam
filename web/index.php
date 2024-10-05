@@ -59,6 +59,21 @@ while ($row = $cam1_results->fetchArray()) {
 	$cam1_day[$row['hour']] = $row['cnt'];
 }
 
+// fill empty hours for graphing purposes
+for ($i = 0; $i < 24; $i++) {
+	if (!isset($cam0_day[$i])) {
+		$cam0_day[$i] = 0;
+	}//if
+
+	if (!isset($cam1_day[$i])) {
+		$cam1_day[$i] = 0;
+	}//if
+}//for
+
+// you have to sort the arrays
+ksort($cam0_day);
+ksort($cam1_day);
+
 $db->close();
 
 ?>
@@ -122,6 +137,9 @@ $db->close();
 	<div class="w3-row-padding">
 		<div class="w3-col m6">
 			<div class="w3-card">
+				<header class="w3-container">
+					<h3>Detections by hour</h3>
+				</header>
 				<div class="w3-container">
 					<canvas id="det_0_graph" style="width:100%"></canvas>
 				</div>
@@ -130,6 +148,9 @@ $db->close();
 
 		<div class="w3-col m6">
 			<div class="w3-card">
+				<header class="w3-container">
+					<h3>Detections by hour</h3>
+				</header>
 				<div class="w3-container">
 					<canvas id="det_1_graph" style="width:100%"></canvas>
 				</div>
@@ -149,14 +170,14 @@ new Chart("det_0_graph", {
   data: {
     labels: det_0_x,
     datasets: [{
-      data: det_0_y
+      data: det_0_y,
+      backgroundColor: "blue"
     }]
   },
   options: {
     legend: {display: false},
     title: {
       display: false,
-      text: "World Wine Production 2018"
     },
     scales: {
       xAxes: [{
@@ -178,14 +199,14 @@ new Chart("det_1_graph", {
   data: {
     labels: det_1_x,
     datasets: [{
-      data: det_1_y
+      data: det_1_y,
+      backgroundColor: "blue"
     }]
   },
   options: {
     legend: {display: false},
     title: {
       display: false,
-      text: "World Wine Production 2018"
     }
   }
 });
