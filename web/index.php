@@ -46,21 +46,33 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 // get SQL data
 $db = new SQLite3('/dev/shm/speed.db', SQLITE3_OPEN_READONLY);
 $cam0_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+$cam0_results_cnt_y = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n', time() - 86400) . ' AND day=' . date('j', time() - 86400) . ' GROUP BY hour');
 $cam1_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+$cam1_results_cnt_y = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=1 AND month=' . date('n', time() - 86400) . ' AND day=' . date('j', time() - 86400) . ' GROUP BY hour');
 $cam0_results_speed = $db->query('SELECT hour, max(speed) as mspeed FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
 $cam1_results_speed = $db->query('SELECT hour, max(speed) as mspeed FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
 
 $cam0_day_cnt = [];
+$cam0_day_cnt_y = [];
 $cam0_day_speed = [];
 $cam1_day_cnt = [];
+$cam1_day_cnt_y = [];
 $cam1_day_speed = [];
 
 while ($row = $cam0_results_cnt->fetchArray()) {
 	$cam0_day_cnt[$row['hour']] = $row['cnt'];
 }//while
 
+while ($row = $cam0_results_cnt_y->fetchArray()) {
+	$cam0_day_cnt_y[$row['hour']] = $row['cnt'];
+}//while
+
 while ($row = $cam1_results_cnt->fetchArray()) {
 	$cam1_day_cnt[$row['hour']] = $row['cnt'];
+}//while
+
+while ($row = $cam1_results_cnt_y->fetchArray()) {
+	$cam1_day_cnt_y[$row['hour']] = $row['cnt'];
 }//while
 
 while ($row = $cam0_results_speed->fetchArray()) {
@@ -75,6 +87,8 @@ while ($row = $cam1_results_speed->fetchArray()) {
 for ($i = 0; $i < 24; $i++) {
 	$cam0_day_cnt[$i] = isset($cam0_day_cnt[$i]) ? $cam0_day_cnt[$i] : 0;
 	$cam1_day_cnt[$i] = isset($cam1_day_cnt[$i]) ? $cam1_day_cnt[$i] : 0;
+	$cam0_day_cnt_y[$i] = isset($cam0_day_cnt_y[$i]) ? $cam0_day_cnt_y[$i] : 0;
+	$cam1_day_cnt_y[$i] = isset($cam1_day_cnt_y[$i]) ? $cam1_day_cnt_y[$i] : 0;
 	$cam0_day_speed[$i] = isset($cam0_day_speed[$i]) ? $cam0_day_speed[$i] : 0;
 	$cam1_day_speed[$i] = isset($cam1_day_speed[$i]) ? $cam1_day_speed[$i] : 0;
 }//for
@@ -82,6 +96,8 @@ for ($i = 0; $i < 24; $i++) {
 // you have to sort the arrays
 ksort($cam0_day_cnt);
 ksort($cam1_day_cnt);
+ksort($cam0_day_cnt_y);
+ksort($cam1_day_cnt_y);
 ksort($cam0_day_speed);
 ksort($cam1_day_speed);
 
@@ -145,7 +161,7 @@ $db->close();
 		</div>
 	</div>
 
-	<div class="w3-row-padding">
+	<div class="w3-row-padding w3-margin-bottom">
 		<div class="w3-col m6">
 			<div class="w3-card">
 				<header class="w3-container">
@@ -196,10 +212,12 @@ $db->close();
 <script>
 const cnt_0_x = <?php echo json_encode(array_keys($cam0_day_cnt)); ?>;
 const cnt_0_y = <?php echo json_encode(array_values($cam0_day_cnt)); ?>;
-
+const cnt_y_0_y = <?php echo json_encode(array_values($cam0_day_cnt_y)); ?>;
+	
 const cnt_1_x = <?php echo json_encode(array_keys($cam1_day_cnt)); ?>;
 const cnt_1_y = <?php echo json_encode(array_values($cam1_day_cnt)); ?>;
-
+const cnt_y_1_y = <?php echo json_encode(array_values($cam1_day_cnt_y)); ?>;
+	
 const speed_0_x = <?php echo json_encode(array_keys($cam0_day_speed)); ?>;
 const speed_0_y = <?php echo json_encode(array_values($cam0_day_speed)); ?>;
 
@@ -213,6 +231,10 @@ new Chart("cnt_0_graph", {
     datasets: [{
       data: cnt_0_y,
       backgroundColor: "blue"
+    },
+	      {
+      data: cnt_y_0_y,
+      backgroundColor: "red"
     }]
   },
   options: {
@@ -236,6 +258,10 @@ new Chart("cnt_1_graph", {
     labels: cnt_1_x,
     datasets: [{
       data: cnt_1_y,
+      backgroundColor: "blue"
+    },
+	      {
+      data: cnt_y_1_y,
       backgroundColor: "blue"
     }]
   },
