@@ -262,7 +262,7 @@ new Chart("cnt_1_graph", {
     },
 	      {
       data: cnt_y_1_y,
-      backgroundColor: "blue"
+      backgroundColor: "red"
     }]
   },
   options: {
