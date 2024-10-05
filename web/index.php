@@ -230,11 +230,11 @@ new Chart("cnt_0_graph", {
     labels: cnt_0_x,
     datasets: [{
       data: cnt_0_y,
-      backgroundColor: "blue"
+      backgroundColor: "#2196F3"
     },
 	      {
       data: cnt_y_0_y,
-      backgroundColor: "red"
+      backgroundColor: "#8acbff"
     }]
   },
   options: {
@@ -258,11 +258,11 @@ new Chart("cnt_1_graph", {
     labels: cnt_1_x,
     datasets: [{
       data: cnt_1_y,
-      backgroundColor: "blue"
+      backgroundColor: "#2196F3"
     },
 	      {
       data: cnt_y_1_y,
-      backgroundColor: "red"
+      backgroundColor: "#8acbff"
     }]
   },
   options: {
@@ -286,7 +286,7 @@ new Chart("speed_0_graph", {
     labels: speed_0_x,
     datasets: [{
       data: speed_0_y,
-      backgroundColor: "blue"
+      backgroundColor: "#2196F3"
     }]
   },
   options: {
@@ -310,7 +310,7 @@ new Chart("speed_1_graph", {
     labels: speed_1_x,
     datasets: [{
       data: speed_1_y,
-      backgroundColor: "blue"
+      backgroundColor: "#2196F3"
     }]
   },
   options: {
