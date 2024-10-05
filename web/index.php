@@ -135,11 +135,14 @@ $db->close();
 				</header>
 				<img src="/frames/<?php echo $image_left['name']; ?>" width="100%" />
 				<div class="w3-container">
-					<p>Channel number: <?php echo $conf["left"]["camera"]; ?></p>
-					<p>Radar serial: <?php echo $conf["left"]["radar"]; ?></p>
-					<p>Speed limit: <?php echo $conf["left"]["speed_limit"]; ?> km/h</p>
-					<p>Top speed: <?php echo $top_speed_left; ?> km/h</p>
-					<p>Curent speed: <?php echo $speed_left; ?> km/h</p>
+					<div class="w3-col m6">
+						<p>Channel number: <?php echo $conf["left"]["camera"]; ?></p>
+						<p>Top speed: <?php echo $top_speed_left; ?> km/h</p>
+					</div>
+					<div class="w3-col m6">
+						<p>Radar serial: <?php echo substr($conf["left"]["radar"], 0, 7); ?></p>
+						<p>Speed limit: <?php echo $conf["left"]["speed_limit"]; ?> km/h</p>
+					</div>
 				</div>
 			</div>
 		</div>
