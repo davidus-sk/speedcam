@@ -45,34 +45,45 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 
 // get SQL data
 $db = new SQLite3('/dev/shm/speed.db', SQLITE3_OPEN_READONLY);
-$cam0_results = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
-$cam1_results = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+$cam0_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+$cam1_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+$cam0_results_speed = $db->query('SELECT hour, max(speed) as mspeed FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
+$cam1_results_speed = $db->query('SELECT hour, max(speed) as mspeed FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
 
-$cam0_day = [];
-$cam1_day = [];
+$cam0_day_cnt = [];
+$cam0_day_speed = [];
+$cam1_day_cnt = [];
+$cam1_day_speed = [];
 
-while ($row = $cam0_results->fetchArray()) {
-	$cam0_day[$row['hour']] = $row['cnt'];
-}
+while ($row = $cam0_results_cnt->fetchArray()) {
+	$cam0_day_cnt[$row['hour']] = $row['cnt'];
+}//while
 
-while ($row = $cam1_results->fetchArray()) {
-	$cam1_day[$row['hour']] = $row['cnt'];
-}
+while ($row = $cam1_results_cnt->fetchArray()) {
+	$cam1_day_cnt[$row['hour']] = $row['cnt'];
+}//while
+
+while ($row = $cam0_results_speed->fetchArray()) {
+	$cam0_day_speed[$row['hour']] = $row['mspeed'];
+}//while
+
+while ($row = $cam1_results_speed->fetchArray()) {
+	$cam1_day_speed[$row['hour']] = $row['mspeed'];
+}//while
 
 // fill empty hours for graphing purposes
 for ($i = 0; $i < 24; $i++) {
-	if (!isset($cam0_day[$i])) {
-		$cam0_day[$i] = 0;
-	}//if
-
-	if (!isset($cam1_day[$i])) {
-		$cam1_day[$i] = 0;
-	}//if
+	$cam0_day_cnt[$i] = isset($cam0_day_cnt[$i]) ? $cam0_day_cnt[$i] : 0;
+	$cam1_day_cnt[$i] = isset($cam1_day_cnt[$i]) ? $cam1_day_cnt[$i] : 0;
+	$cam0_day_speed[$i] = isset($cam0_day_speed[$i]) ? $cam0_day_speed[$i] : 0;
+	$cam1_day_speed[$i] = isset($cam1_day_speed[$i]) ? $cam1_day_speed[$i] : 0;
 }//for
 
 // you have to sort the arrays
-ksort($cam0_day);
-ksort($cam1_day);
+ksort($cam0_day_cnt);
+ksort($cam1_day_cnt);
+ksort($cam0_day_speed);
+ksort($cam1_day_speed);
 
 $db->close();
 
@@ -141,7 +152,7 @@ $db->close();
 					<h3>Detections by hour</h3>
 				</header>
 				<div class="w3-container">
-					<canvas id="det_0_graph" style="width:100%"></canvas>
+					<canvas id="cnt_0_graph" style="width:100%"></canvas>
 				</div>
 			</div>
 		</div>
@@ -152,25 +163,55 @@ $db->close();
 					<h3>Detections by hour</h3>
 				</header>
 				<div class="w3-container">
-					<canvas id="det_1_graph" style="width:100%"></canvas>
+					<canvas id="cnt_1_graph" style="width:100%"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="w3-row-padding">
+		<div class="w3-col m6">
+			<div class="w3-card">
+				<header class="w3-container">
+					<h3>Top speed by hour</h3>
+				</header>
+				<div class="w3-container">
+					<canvas id="speed_0_graph" style="width:100%"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<div class="w3-col m6">
+			<div class="w3-card">
+				<header class="w3-container">
+					<h3>Top speed by hour</h3>
+				</header>
+				<div class="w3-container">
+					<canvas id="speed_1_graph" style="width:100%"></canvas>
 				</div>
 			</div>
 		</div>
 	</div>
 
 <script>
-const det_0_x = <?php echo json_encode(array_keys($cam0_day)); ?>;
-const det_0_y = <?php echo json_encode(array_values($cam0_day)); ?>;
+const cnt_0_x = <?php echo json_encode(array_keys($cam0_day_cnt)); ?>;
+const cnt_0_y = <?php echo json_encode(array_values($cam0_day_cnt)); ?>;
 
-const det_1_x = <?php echo json_encode(array_keys($cam1_day)); ?>;
-const det_1_y = <?php echo json_encode(array_values($cam1_day)); ?>;
+const cnt_1_x = <?php echo json_encode(array_keys($cam1_day_cnt)); ?>;
+const cnt_1_y = <?php echo json_encode(array_values($cam1_day_cnt)); ?>;
 
-new Chart("det_0_graph", {
+const speed_0_x = <?php echo json_encode(array_keys($cam0_day_speed)); ?>;
+const speed_0_y = <?php echo json_encode(array_values($cam0_day_speed)); ?>;
+
+const speed_1_x = <?php echo json_encode(array_keys($cam1_day_speed)); ?>;
+const speed_1_y = <?php echo json_encode(array_values($cam1_day_speed)); ?>;
+
+new Chart("cnt_0_graph", {
   type: "bar",
   data: {
-    labels: det_0_x,
+    labels: cnt_0_x,
     datasets: [{
-      data: det_0_y,
+      data: cnt_0_y,
       backgroundColor: "blue"
     }]
   },
@@ -185,21 +226,16 @@ new Chart("det_0_graph", {
           display: false // Disables grid lines on the x-axis
         }
       }],
-      y: {
-        grid: {
-          display: false // Disables grid lines on the y-axis
-        }
-      }
     }
   }
 });
 
-new Chart("det_1_graph", {
+new Chart("cnt_1_graph", {
   type: "bar",
   data: {
-    labels: det_1_x,
+    labels: cnt_1_x,
     datasets: [{
-      data: det_1_y,
+      data: cnt_1_y,
       backgroundColor: "blue"
     }]
   },
@@ -207,6 +243,61 @@ new Chart("det_1_graph", {
     legend: {display: false},
     title: {
       display: false,
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false // Disables grid lines on the x-axis
+        }
+      }],
+    }
+  }
+});
+
+new Chart("speed_0_graph", {
+  type: "bar",
+  data: {
+    labels: speed_0_x,
+    datasets: [{
+      data: speed_0_y,
+      backgroundColor: "blue"
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: false,
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false // Disables grid lines on the x-axis
+        }
+      }],
+    }
+  }
+});
+
+new Chart("speed_1_graph", {
+  type: "bar",
+  data: {
+    labels: speed_1_x,
+    datasets: [{
+      data: speed_1_y,
+      backgroundColor: "blue"
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: false,
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false // Disables grid lines on the x-axis
+        }
+      }],
     }
   }
 });
