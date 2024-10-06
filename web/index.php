@@ -191,7 +191,7 @@ $db->close();
 		</div>
 	</div>
 
-	<div class="w3-row-padding">
+	<div class="w3-row-padding w3-margin-bottom">
 		<div class="w3-col m6">
 			<div class="w3-card">
 				<header class="w3-container">
@@ -210,6 +210,21 @@ $db->close();
 				</header>
 				<div class="w3-container">
 					<canvas id="speed_1_graph" style="width:100%"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="w3-row-padding">
+		<div class="w3-col">
+			<div class="w3-row-padding w3-blue">
+				<div class="w3-col m6">
+					<p>Copyright &copy; 2024 <b>LUCEON LLC</b>. All rights reserved.</p>
+					<p></p>
+				</div>
+				<div class="w3-col m6">
+					<p></p>
+					<p></p>
 				</div>
 			</div>
 		</div>
