@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
-# #############################################################
-# Speed camera system - detection creation
-# Triggered by high speed detection via read_radar.py
-# Pools data together, finds images, sends to upstream server
-# #############################################################
+"""
+Speed camera system - detection creation
+Triggered by high speed detection via read_radar.py
+Pools data together, finds images, sends to upstream server
+
+(C) LUCEON LLC 2024
+"""
 
 # libraries
 import json
@@ -17,6 +19,7 @@ import glob
 import re
 import sqlite3
 import datetime
+import shutil
 
 # need to have input
 if len(sys.argv) < 3:
@@ -55,22 +58,21 @@ cur.execute("CREATE TABLE IF NOT EXISTS detections (time, month, day, hour, dire
 
 # create detection
 data = {"ts": ts, "radar":radar, "speed":speed, "direction":direction, "camera":camera}
+directory = f"/dev/shm/{camera}_{ts}"
+os.mkdir(directory) 
 
 # store in DB as well
 cur.execute(f'INSERT INTO detections VALUES ({ts}, {dt.month}, {dt.day}, {dt.hour}, "{direction}", {camera}, "{radar}", {speed})')
 con.commit()
 con.close()
 
-# write to file
-filename = f"d_{camera}_{ts}.json"
-syslog.syslog(syslog.LOG_DEBUG, f"Logging detection to file {filename} for radar {radar}.")
-
-with open("/dev/shm/" + filename, 'w', encoding='utf-8') as f:
-	json.dump(data, f, ensure_ascii=False, indent=4)
-
-# generate images
+# find images
 for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
-	image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
+	#image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
+	mtime_seconds = os.path.getmtime(name)
+
+	if mtime_seconds >= ts and abs(ts - mtime_seconds) <= 1.5:
+		shutil.copy2(name, directory)
 
 # post detection to server
 """
