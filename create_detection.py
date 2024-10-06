@@ -71,7 +71,7 @@ for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
 	#image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
 	mtime_seconds = os.path.getmtime(name)
 
-	if mtime_seconds >= ts and abs(ts - mtime_seconds) <= 1.5:
+	if abs(ts - mtime_seconds) <= 1.6:
 		shutil.copy2(name, directory)
 
 # post detection to server
