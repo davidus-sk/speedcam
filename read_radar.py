@@ -151,7 +151,7 @@ while True:
 			syslog.syslog(syslog.LOG_INFO, f"Overspeed {speed_towards} km/h detected on radar {radar}.")
 
 			# create new detection
-			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} > /dev/null 2>&1 &");
+			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection} > /dev/null 2>&1 &");
 
 			# flashers
 			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &");
