@@ -3,6 +3,7 @@
 
 // get command line params
 $side = $argv[1];
+$fps = empty($argv[2]) ? 10 : (int)$argv[2];
 
 $lockFile = fopen("/tmp/grab_frames_video_{$side}.pid", 'c');
 $gotLock = flock($lockFile, LOCK_EX | LOCK_NB, $wouldBlock);
@@ -53,7 +54,7 @@ while (TRUE) {
 		$ts = time();
 		syslog(LOG_INFO, "Starting ffmpeg for side {$side} at {$ts} for URL {$url}.");
 
-		`/usr/bin/ffmpeg -hide_banner -y -rtsp_transport tcp -i {$url} -frames:v 500 -r 8 {$output_dir}{$camera}_{$ts}_%09d.jpg  > /dev/null 2>&1 &`;
+		`/usr/bin/ffmpeg -hide_banner -y -rtsp_transport tcp -i {$url} -frames:v 500 -r {$fps} {$output_dir}{$camera}_{$ts}_%09d.jpg  > /dev/null 2>&1 &`;
 	}//if
 
 	// remove old images
