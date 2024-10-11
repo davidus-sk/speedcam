@@ -22,7 +22,7 @@ import datetime
 import shutil
 
 # need to have input
-if len(sys.argv) < 3:
+if len(sys.argv) < 4:
 	sys.exit()
 
 # start syslog
@@ -33,9 +33,9 @@ config_file = "/app/speed/config.json"
 config = {}
 radar = sys.argv[1]
 speed = sys.argv[2]
+ts = sys.argv[3]
 camera = None
 direction = None
-ts = time.time()
 dt = datetime.datetime.fromtimestamp(ts)
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
@@ -67,7 +67,7 @@ con.commit()
 con.close()
 
 # find images
-for name in glob.glob(f"/dev/shm/ffmpeg/*.jpg"):
+for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
 	#image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
 	mtime_seconds = os.path.getmtime(name)
 
