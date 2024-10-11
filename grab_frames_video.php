@@ -24,7 +24,7 @@ $conf_file = "/app/speed/config.json";
 $config = [];
 $camera = null;
 $url = null;
-$keep_files = 20;
+$keep_files = 100;
 $ts = time();
 
 if (file_exists($conf_file) && filesize($conf_file) > 0) {
