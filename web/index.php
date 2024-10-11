@@ -110,6 +110,7 @@ $db->close();
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
 	<body>
 
 	<div class="w3-row-padding w3-margin-bottom">
@@ -141,7 +142,7 @@ $db->close();
 					</div>
 					<div class="w3-col m6">
 						<p>Radar serial: <?php echo substr($conf["left"]["radar"], 0, 8); ?></p>
-						<p>Speed limit: <?php echo $conf["left"]["speed_limit"]; ?> km/h</p>
+						<p class="w3-text-red">Speed limit: <?php echo $conf["left"]["speed_limit"]; ?> km/h</p>
 					</div>
 				</div>
 			</div>
@@ -160,7 +161,7 @@ $db->close();
 					</div>
 					<div class="w3-col m6">
 						<p>Radar serial: <?php echo substr($conf["right"]["radar"], 0, 8); ?></p>
-						<p>Speed limit: <?php echo $conf["right"]["speed_limit"]; ?> km/h</p>
+						<p class="w3-text-red">Speed limit: <?php echo $conf["right"]["speed_limit"]; ?> km/h</p>
 					</div>
 				</div>
 			</div>
@@ -220,30 +221,32 @@ $db->close();
 			<div class="w3-row-padding w3-blue">
 				<div class="w3-col m6">
 					<p>Copyright &copy; 2024 <b>LUCEON LLC</b>. All rights reserved.</p>
-					<p></p>
 				</div>
 				<div class="w3-col m6">
-					<p></p>
-					<p></p>
+					<p>
+					Free shmem: <?php echo trim(`/usr/bin/df | /usr/bin/awk '/([0-9]+)% \/dev\/shm/{print $5; exit}'`);?>
+					<span class="w3-text-light-blue">|</span>
+					Utilization: <?php echo trim(`/usr/bin/uptime | /usr/bin/awk '{print $11}' | /usr/bin/sed 's/,$//'`);?>
+					</p>
 				</div>
 			</div>
 		</div>
 	</div>
 
-<script>
-const cnt_0_x = <?php echo json_encode(array_keys($cam0_day_cnt)); ?>;
-const cnt_0_y = <?php echo json_encode(array_values($cam0_day_cnt)); ?>;
-const cnt_y_0_y = <?php echo json_encode(array_values($cam0_day_cnt_y)); ?>;
-	
-const cnt_1_x = <?php echo json_encode(array_keys($cam1_day_cnt)); ?>;
-const cnt_1_y = <?php echo json_encode(array_values($cam1_day_cnt)); ?>;
-const cnt_y_1_y = <?php echo json_encode(array_values($cam1_day_cnt_y)); ?>;
-	
-const speed_0_x = <?php echo json_encode(array_keys($cam0_day_speed)); ?>;
-const speed_0_y = <?php echo json_encode(array_values($cam0_day_speed)); ?>;
+	<script>
+	const cnt_0_x = <?php echo json_encode(array_keys($cam0_day_cnt)); ?>;
+	const cnt_0_y = <?php echo json_encode(array_values($cam0_day_cnt)); ?>;
+	const cnt_y_0_y = <?php echo json_encode(array_values($cam0_day_cnt_y)); ?>;
 
-const speed_1_x = <?php echo json_encode(array_keys($cam1_day_speed)); ?>;
-const speed_1_y = <?php echo json_encode(array_values($cam1_day_speed)); ?>;
+	const cnt_1_x = <?php echo json_encode(array_keys($cam1_day_cnt)); ?>;
+	const cnt_1_y = <?php echo json_encode(array_values($cam1_day_cnt)); ?>;
+	const cnt_y_1_y = <?php echo json_encode(array_values($cam1_day_cnt_y)); ?>;
+
+	const speed_0_x = <?php echo json_encode(array_keys($cam0_day_speed)); ?>;
+	const speed_0_y = <?php echo json_encode(array_values($cam0_day_speed)); ?>;
+
+	const speed_1_x = <?php echo json_encode(array_keys($cam1_day_speed)); ?>;
+	const speed_1_y = <?php echo json_encode(array_values($cam1_day_speed)); ?>;
 
 new Chart("cnt_0_graph", {
   type: "bar",
