@@ -23,7 +23,7 @@ $conf_file = "/app/speed/config.json";
 $config = [];
 $camera = null;
 $url = null;
-$keep_files = 10;
+$keep_files = 20;
 $ts = time();
 
 if (file_exists($conf_file) && filesize($conf_file) > 0) {
@@ -69,8 +69,8 @@ while (TRUE) {
 			$at = (int)substr($a, 2, 10);
 			$bt = (int)substr($b, 2, 10);
 
-			$af = $at + (int)substr($a, 13, 9);
-			$bf = $bt + (int)substr($b, 13, 9);
+			$af = $at + ((int)substr($a, 13, 9) / 1000);
+			$bf = $bt + ((int)substr($b, 13, 9) / 1000);
 
 			return $af > $bf;
 		});
@@ -84,7 +84,6 @@ while (TRUE) {
 			}//for
 		}//if
 	}//if
-
 
 	sleep(1);
 }//while
