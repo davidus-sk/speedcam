@@ -68,7 +68,6 @@ con.close()
 
 # find images
 for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
-	#image_ts = re.search(r"_([0-9]+\.[0-9]+)\.", name)
 	mtime_seconds = os.path.getmtime(name)
 
 	if abs(ts - mtime_seconds) <= 1.6:
