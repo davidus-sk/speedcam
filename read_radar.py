@@ -17,6 +17,7 @@ import time
 import json
 import os
 import fcntl
+import datetime
 from pathlib import Path
 
 # only run once
@@ -160,7 +161,9 @@ while True:
 		# debug
 		with open(f"/tmp/{camera}.osd", 'w') as f:
 			tme = time.time()
-			f.write(f"{tme} > to {speed_away} km/h > from {speed_towards} km/h")
+			dt = datetime.datetime.fromtimestamp(tme)
+			tme_str = dt.isoformat()
+			f.write(f"{tme_str} ({tme})")
 
 		# record current speed
 		with open(f"/dev/shm/{radar}.speed", 'w') as f:

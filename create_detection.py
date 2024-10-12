@@ -73,11 +73,11 @@ con.close()
 time.sleep(5)
 
 # find images
-for name in glob.glob(f"/dev/shm/ffmpeg/*.jpg"):
+for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
 	mtime_seconds = os.path.getmtime(name)
 	mtime_diff = mtime_seconds - ts
 
-	if mtime_diff > 0 and mtime_diff <= 5:
+	if mtime_diff > -1 and mtime_diff <= 10:
 		shutil.copy2(name, directory)
 
 # post detection to server
