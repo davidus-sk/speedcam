@@ -157,7 +157,7 @@ while True:
 			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &");
 
 		# debug
-		with open(f"/tmp/{camera}.osd") as f
+		with open(f"/tmp/{camera}.osd", 'w') as f:
 			tme = time.time()
 			f.write(f"{tme} > to {speed_away} km/h > from {speed_towards} km/h")
 
