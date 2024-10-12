@@ -13,7 +13,7 @@
 	},
 	"settings": {
 		"camera": {
-			"image_url":"http://10.225.5.2/stw-cgi/video.cgi?msubmenu=snapshot&action=view&Channel=",
+			"image_url":"http://10.225.5.2/stw-cgi/video.cgi?msubmenu=snapshot&action=view&Channel=#channel#",
 			"video_url":"rtsp://10.225.5.2/#channel#/profile2/media.smp"
 		},
 		"api": {

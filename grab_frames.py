@@ -88,12 +88,12 @@ if not os.path.isdir(directory):
 
 # find this radar in config
 camera = config[direction]["camera"]
-url = config["settings"]["camera"]["image_url"]
+url = config["settings"]["camera"]["image_url"].replace("#channel#", str(camera))
 
 while True:
 	print(f"Grabbing frame")
 	filename = directory + str(camera) + "_" + str(time.time()) + ".jpg"
-	save_file_with_digest_auth(url + str(camera), 'admin', '337caaf1d2', filename)
+	save_file_with_digest_auth(url, 'admin', '337caaf1d2', filename)
 
 	buffer.append(filename)
 

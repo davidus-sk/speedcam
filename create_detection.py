@@ -2,6 +2,7 @@
 
 """
 Speed camera system - detection creation
+
 Triggered by high speed detection via read_radar.py
 Pools data together, finds images, sends to upstream server
 
@@ -28,15 +29,17 @@ if len(sys.argv) < 4:
 # start syslog
 syslog.openlog(logoption=syslog.LOG_PID)
 
-# read config
-config_file = "/app/speed/config.json"
-config = {}
+# global vars
 radar = sys.argv[1]
 speed = float(sys.argv[2])
 ts = float(sys.argv[3])
 camera = None
 direction = None
 dt = datetime.datetime.fromtimestamp(ts)
+
+# read config
+config_file = "/app/speed/config.json"
+config = {}
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
 	syslog.syslog(syslog.LOG_ERR, f"Config file {config_file} does not exist. Quitting...")
@@ -59,18 +62,22 @@ cur.execute("CREATE TABLE IF NOT EXISTS detections (time, month, day, hour, dire
 # create detection
 data = {"ts": ts, "radar":radar, "speed":speed, "direction":direction, "camera":camera}
 directory = f"/dev/shm/{camera}_{ts}"
-os.mkdir(directory) 
+os.mkdir(directory)
 
 # store in DB as well
 cur.execute(f'INSERT INTO detections VALUES ({ts}, {dt.month}, {dt.day}, {dt.hour}, "{direction}", {camera}, "{radar}", {speed})')
 con.commit()
 con.close()
 
-# find images
-for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
-	mtime_seconds = os.path.getmtime(name)
+# give time for the car to pass
+time.sleep(5)
 
-	if abs(ts - mtime_seconds) <= 1.6:
+# find images
+for name in glob.glob(f"/dev/shm/ffmpeg/*.jpg"):
+	mtime_seconds = os.path.getmtime(name)
+	mtime_diff = mtime_seconds - ts
+
+	if mtime_diff > 0 and mtime_diff <= 5:
 		shutil.copy2(name, directory)
 
 # post detection to server

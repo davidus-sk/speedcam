@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
 """
-Read speed for radar via serial interface and create detections
+Speed camera - Obtain and process speed
+
 Script gets data from serial radars, checks if speed is above predetermined threshold,
 turns on flashers, and creates a detection via a callback
 
@@ -18,24 +19,27 @@ import os
 import fcntl
 from pathlib import Path
 
+# only run once
+lock_file_pointer = os.open(f"/tmp/read_radar_{sys.argv[2]}.pid", os.O_WRONLY | os.O_CREAT)
+
+try:
+	fcntl.lockf(lock_file_pointer, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+	sys.exit()
+
 # need to have serial port and radar id
 # arg 1 - serial port to connect to
 # arg 2 - serial ID of the radar to work with
 if len(sys.argv) < 3:
 	sys.exit()
 
-# start up variables
+# global variables
 tty = sys.argv[1]
 radar = sys.argv[2]
+camera = None
+direction = None
+ts_detection = time.time()
 Path(f"/dev/shm/{radar}.top").touch()
-
-# only run once
-lock_file_pointer = os.open(f"/tmp/read_radar_{radar}.pid", os.O_WRONLY | os.O_CREAT)
-
-try:
-	fcntl.lockf(lock_file_pointer, fcntl.LOCK_EX | fcntl.LOCK_NB)
-except IOError:
-	sys.exit()
 
 # start syslog
 syslog.openlog(logoption=syslog.LOG_PID)
@@ -43,9 +47,6 @@ syslog.openlog(logoption=syslog.LOG_PID)
 # read config
 config_file = "/app/speed/config.json"
 config = {}
-camera = None
-direction = None
-ts_detection = time.time()
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
 	syslog.syslog(syslog.LOG_ERR, f"Config file {config_file} does not exist. Quitting...")
@@ -134,8 +135,8 @@ while True:
 	# check that we have 5 componets, the last one will be empty
 	if len(items) == 5:
 		# the 8960 value is dependent on $S04 setting
-		speed_away = round(int(items[0]) * 8960 / 256 / 44.7 / 1, 2)
-		speed_towards = round(int(items[1]) * 8960 / 256 / 44.7 / 1, 2)
+		speed_away = round(int(items[1]) * 8960 / 256 / 44.7 / 1, 2)
+		speed_towards = round(int(items[0]) * 8960 / 256 / 44.7 / 1, 2)
 
 		# speeder detected
 		# look at the radar that sees the car approaching
@@ -143,7 +144,7 @@ while True:
 		# it has been at least a ts_spacing since the last detection
 		# we log a valid speeder
 		ts_spacing = (1 - (speed_towards / 100.2)) + 1
-		
+
 		if speed_towards >= config[direction]["speed_limit"] and (time.time() - ts_detection) > ts_spacing:
 			ts_detection = time.time()
 
