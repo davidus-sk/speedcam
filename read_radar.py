@@ -157,7 +157,9 @@ while True:
 			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &");
 
 		# debug
-		#print(f"To {speed_away} km/h :: From {speed_towards} km/h")
+		with open(f"/tmp/{camera}.osd") as f
+			tme = time.time()
+			f.write(f"{tme} > to {speed_away} km/h > from {speed_towards} km/h")
 
 		# record current speed
 		with open(f"/dev/shm/{radar}.speed", 'w') as f:
