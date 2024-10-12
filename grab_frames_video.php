@@ -54,7 +54,8 @@ while (TRUE) {
 		$ts = time();
 		syslog(LOG_INFO, "Starting ffmpeg for side {$side} at {$ts} for URL {$url}.");
 
-		`/usr/bin/ffmpeg -hide_banner -y -rtsp_transport tcp -i {$url} -frames:v 500 -r {$fps} {$output_dir}{$camera}_{$ts}_%09d.jpg  > /dev/null 2>&1 &`;
+		// start the recorder
+		`/usr/bin/ffmpeg -hide_banner -y -rtsp_transport tcp -i {$url} -vf "drawtext=fontfile=/app/speed/camingo.ttf:fontsize=20:fontcolor=red:x=30:y=30:textfile=/tmp/image_osd.dat:reload=1" -frames:v 500 -r {$fps} {$output_dir}{$camera}_{$ts}_%09d.jpg  > /dev/null 2>&1 &`;
 	}//if
 
 	// remove old images
@@ -75,7 +76,6 @@ while (TRUE) {
 
 			return $af > $bf;
 		});
-
 
 		$file_diff = $file_count - $keep_files;
 
