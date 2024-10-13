@@ -77,7 +77,7 @@ for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
 	mtime_seconds = os.path.getmtime(name)
 	mtime_diff = mtime_seconds - ts
 
-	if mtime_diff > 0 and mtime_diff <= 3:
+	if mtime_diff >= 6 and mtime_diff <= 8:
 		shutil.copy2(name, directory)
 
 	# delete original file
