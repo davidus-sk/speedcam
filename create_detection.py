@@ -81,7 +81,7 @@ for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
 		shutil.copy2(name, directory)
 
 	# delete original file
-	os.delete(name)
+	os.remove(name)
 
 # post detection to server
 """
