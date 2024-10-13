@@ -24,7 +24,7 @@ $conf_file = "/app/speed/config.json";
 $config = [];
 $camera = null;
 $url = null;
-$keep_files = 100;
+$keep_files = 150;
 $ts = time();
 
 if (file_exists($conf_file) && filesize($conf_file) > 0) {
@@ -55,7 +55,7 @@ while (TRUE) {
 		syslog(LOG_INFO, "Starting ffmpeg for side {$side} at {$ts} for URL {$url}.");
 
 		// start the recorder
-		`/usr/bin/ffmpeg -hide_banner -y -rtsp_transport tcp -i {$url} -vf "drawtext=fontfile=/app/speed/camingo.ttf:fontsize=40:fontcolor=red:x=30:y=30:textfile=/tmp/{$camera}.osd:reload=1" -frames:v 500 -q:v 20 -r {$fps} {$output_dir}{$camera}_{$ts}_%09d.jpg  > /dev/null 2>&1 &`;
+		`/usr/bin/ffmpeg -hide_banner -y -rtsp_transport tcp -i {$url} -vf "drawtext=fontfile=/app/speed/camingo.ttf:fontsize=40:fontcolor=red:x=30:y=30:textfile=/tmp/{$camera}.osd:reload=1" -frames:v 1500 -q:v 20 -r {$fps} {$output_dir}{$camera}_{$ts}_%09d.jpg  > /dev/null 2>&1 &`;
 	}//if
 
 	// remove old images

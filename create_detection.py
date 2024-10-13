@@ -70,14 +70,14 @@ con.commit()
 con.close()
 
 # give time for the car to pass
-time.sleep(5)
+time.sleep(10)
 
 # find images
 for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_*"):
 	mtime_seconds = os.path.getmtime(name)
 	mtime_diff = mtime_seconds - ts
 
-	if mtime_diff > -1 and mtime_diff <= 10:
+	if mtime_diff > 9 and mtime_diff <= 11:
 		shutil.copy2(name, directory)
 
 # post detection to server

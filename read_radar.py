@@ -40,7 +40,6 @@ radar = sys.argv[2]
 camera = None
 direction = None
 ts_detection = time.time()
-Path(f"/dev/shm/{radar}.top").touch()
 
 # start syslog
 syslog.openlog(logoption=syslog.LOG_PID)
@@ -163,20 +162,12 @@ while True:
 			tme = time.time()
 			dt = datetime.datetime.fromtimestamp(tme)
 			tme_str = dt.isoformat()
-			f.write(f"{tme_str} ({tme})")
+			f.write(f"{tme_str} ({tme}) :: Camera {camera} :: Radar {radar} :: Direction {direction}")
 
 		# record current speed
 		with open(f"/dev/shm/{radar}.speed", 'w') as f:
 			f.write(str(speed_towards))
 
-		# record top speed
-		with open(f"/dev/shm/{radar}.top", 'r+') as f:
-			speed_top = f.readline()
-
-			if not speed_top.strip() or float(speed_top) < speed_towards:
-				f.seek(0)
-				f.write(str(speed_towards))
-				f.truncate()
 
 	# rest
 	time.sleep(0.02)
