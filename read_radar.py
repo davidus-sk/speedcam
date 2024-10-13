@@ -61,8 +61,12 @@ for v in config:
 		camera = config[v]["camera"]
 		direction = v
 
+# sanity check
 if camera is None or direction is None:
 	syslog.syslog(syslog.LOG_ERR, f"No valid camera and direction found for radar {radar}. Quitting...")
+
+# for frame capture
+camera_url = config["settings"]["camera"]["video_url"].replace("#channel#", str(camera))
 
 # open port
 ser = serial.Serial(tty, 38400, timeout=1)
@@ -151,6 +155,9 @@ while True:
 			# log event
 			syslog.syslog(syslog.LOG_INFO, f"Overspeed {speed_towards} km/h detected on radar {radar}.")
 
+			# start frame capture
+			os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -i {camera_url} -q:v 1 -r 1000 -vsync 0 -f image2 -frame_pts 1 -frames:v 100 /dev/shm/ffmpeg/{camera}_{ts_detection}_%09d.jpg > /dev/null 2>&1 &")
+
 			# create new detection
 			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection} > /dev/null 2>&1 &");
 
@@ -167,7 +174,6 @@ while True:
 		# record current speed
 		with open(f"/dev/shm/{radar}.speed", 'w') as f:
 			f.write(str(speed_towards))
-
 
 	# rest
 	time.sleep(0.02)
