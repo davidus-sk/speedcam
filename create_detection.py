@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/app/inference/bin/python3
 
 """
 Speed camera system - detection creation
@@ -21,6 +21,8 @@ import re
 import sqlite3
 import datetime
 import shutil
+from inference import get_model
+from PIL import Image
 
 # need to have input
 if len(sys.argv) < 4:
@@ -73,15 +75,38 @@ con.close()
 time.sleep(10)
 
 # find images
-for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
-	mtime_seconds = os.path.getmtime(name)
-	mtime_diff = mtime_seconds - ts
+best_image = None
+best_score = 0
+best_box = ()
+found_plate = false
+results = []
 
-	if mtime_diff >= 6 and mtime_diff <= 8:
-		shutil.copy2(name, directory)
+for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
+	if not found_plate or results["predictions"]:
+		results = json.loads(model.infer(name)[0].json())
+
+		for prediction in results["predictions"]:
+			found_plate = true
+			confidence = float(prediction["confidence"])
+			x1 = int(prediction["x"]) - int(prediction["width"]) / 2
+			y1 = int(prediction["y"]) - int(prediction["height"]) / 2
+			x2 = int(prediction["x"]) + int(prediction["width"]) / 2
+			y2 = int(prediction["y"]) + int(prediction["height"]) / 2
+
+			if confidence > best_score:
+				syslog.syslog(syslog.LOG_INFO, f'Found plate with confidence {confidence}.')
+				best_score = confidence
+				best_image = name
+				best_box = (x1, y1, x2, y2)
+				shutil.copy2(name, directory)
 
 	# delete original file
-	#os.remove(name)
+	os.remove(name)
+
+if found_plate:
+	image = Image.open(best_image)
+	cropped_image = image.crop(best_box)
+	cropped_image.save(f"{directory}/plate.jpg")
 
 # post detection to server
 """
