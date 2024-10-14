@@ -159,7 +159,7 @@ while True:
 			os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -i {camera_url} -q:v 25 -r 1000 -vsync 0 -f image2 -frame_pts 1 -frames:v 100 /dev/shm/ffmpeg/{camera}_{ts_detection}_%09d.jpg > /dev/null 2>&1 &")
 
 			# create new detection
-			#os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection} > /dev/null 2>&1 &");
+			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection} > /dev/null 2>&1 &");
 
 			# flashers
 			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &");
