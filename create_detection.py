@@ -1,4 +1,4 @@
-#!/app/inference/bin/python3
+#!/usr/bin/python3
 
 """
 Speed camera system - detection creation
@@ -16,13 +16,9 @@ import sys
 import os
 import syslog
 import requests
-import glob
 import re
 import sqlite3
 import datetime
-import shutil
-from inference import get_model
-from PIL import Image
 
 # need to have input
 if len(sys.argv) < 4:
@@ -38,7 +34,6 @@ ts = float(sys.argv[3])
 camera = None
 direction = None
 dt = datetime.datetime.fromtimestamp(ts)
-model = get_model(model_id="license-plate-recognition-rxg4e/4")
 
 # read config
 config_file = "/app/speed/config.json"
@@ -60,17 +55,21 @@ for v in config:
 # connecto to sqlite and create DB if it does not exist
 con = sqlite3.connect("/dev/shm/speed.db")
 cur = con.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS detections (time INTEGER, month INTEGER, day INTEGER, hour INTEGER, direction, camera INTEGER, radar, speed REAL, processed INTEGER DEFAULT 0, uploaded INTEGER DEFAULT 0)")
+cur.execute("CREATE TABLE IF NOT EXISTS detections (time TEXT, month INTEGER, day INTEGER, hour INTEGER, direction, camera INTEGER, radar, speed REAL, processed INTEGER DEFAULT 0, uploaded INTEGER DEFAULT 0)")
+con.commit()
 
-# create detection
-data = {"ts": ts, "radar":radar, "speed":speed, "direction":direction, "camera":camera}
-directory = f"/dev/shm/{camera}_{ts}"
-os.mkdir(directory)
+time.sleep(10)
 
 # store in DB as well
-cur.execute(f'INSERT INTO detections VALUES ({ts}, {dt.month}, {dt.day}, {dt.hour}, "{direction}", {camera}, "{radar}", {speed})')
+syslog.syslog(syslog.LOG_INFO, f"Creating new detection {ts} for camera {camera}")
+cur.execute(f'INSERT INTO detections VALUES ("{ts}", {dt.month}, {dt.day}, {dt.hour}, "{direction}", {camera}, "{radar}", {speed}, 0, 0)')
 con.commit()
 con.close()
+
+# create detection directory
+directory = f"/dev/shm/{camera}_{ts}"
+if not os.path.exists(directory):
+	os.mkdir(directory)
 
 # post detection to server
 """

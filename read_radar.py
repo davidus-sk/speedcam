@@ -40,6 +40,11 @@ radar = sys.argv[2]
 camera = None
 direction = None
 ts_detection = time.time()
+ffmpeg_dir = "/dev/shm/ffmpeg"
+
+# create needed directories
+if not os.path.exists(ffmpeg_dir):
+	os.makedirs(ffmpeg_dir)
 
 # start syslog
 syslog.openlog(logoption=syslog.LOG_PID)
@@ -151,18 +156,19 @@ while True:
 
 		if speed_towards >= config[direction]["speed_limit"] and (time.time() - ts_detection) > ts_spacing:
 			ts_detection = time.time()
+			ts_detection_str = '%.4f'%(ts_detection)
 
 			# log event
 			syslog.syslog(syslog.LOG_INFO, f"Overspeed {speed_towards} km/h detected on radar {radar}.")
 
 			# start frame capture
-			os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -i {camera_url} -q:v 25 -r 1000 -vsync 0 -f image2 -frame_pts 1 -frames:v 100 /dev/shm/ffmpeg/{camera}_{ts_detection}_%09d.jpg > /dev/null 2>&1 &")
+			os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -i {camera_url} -q:v 16 -r 1000 -vsync 0 -f image2 -frame_pts 1 -frames:v 100 /dev/shm/ffmpeg/{camera}_{ts_detection_str}_%09d.jpg > /dev/null 2>&1 &")
 
 			# create new detection
-			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection} > /dev/null 2>&1 &");
+			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection_str} > /dev/null 2>&1 &")
 
 			# flashers
-			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &");
+			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &")
 
 		# debug
 		with open(f"/tmp/{camera}.osd", 'w') as f:
