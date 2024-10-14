@@ -60,7 +60,7 @@ for v in config:
 # connecto to sqlite and create DB if it does not exist
 con = sqlite3.connect("/dev/shm/speed.db")
 cur = con.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS detections (time, month, day, hour, direction, camera, radar, speed)")
+cur.execute("CREATE TABLE IF NOT EXISTS detections (time INTEGER, month INTEGER, day INTEGER, hour INTEGER, direction, camera INTEGER, radar, speed, processed INTEGER DEFAULT 0, uploaded INTEGER DEFAULT 0)")
 
 # create detection
 data = {"ts": ts, "radar":radar, "speed":speed, "direction":direction, "camera":camera}
