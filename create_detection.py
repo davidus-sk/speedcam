@@ -38,6 +38,7 @@ ts = float(sys.argv[3])
 camera = None
 direction = None
 dt = datetime.datetime.fromtimestamp(ts)
+model = get_model(model_id="license-plate-recognition-rxg4e/4")
 
 # read config
 config_file = "/app/speed/config.json"
@@ -78,7 +79,7 @@ time.sleep(10)
 best_image = None
 best_score = 0
 best_box = ()
-found_plate = false
+found_plate = False
 results = []
 
 for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
@@ -86,7 +87,7 @@ for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
 		results = json.loads(model.infer(name)[0].json())
 
 		for prediction in results["predictions"]:
-			found_plate = true
+			found_plate = True
 			confidence = float(prediction["confidence"])
 			x1 = int(prediction["x"]) - int(prediction["width"]) / 2
 			y1 = int(prediction["y"]) - int(prediction["height"]) / 2
@@ -96,7 +97,7 @@ for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
 			if confidence > best_score:
 				syslog.syslog(syslog.LOG_INFO, f'Found plate with confidence {confidence}.')
 				best_score = confidence
-				best_image = name
+				best_image = os.path.basename(name)
 				best_box = (x1, y1, x2, y2)
 				shutil.copy2(name, directory)
 
@@ -104,7 +105,7 @@ for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
 	os.remove(name)
 
 if found_plate:
-	image = Image.open(best_image)
+	image = Image.open(f"{directory}/{best_image}")
 	cropped_image = image.crop(best_box)
 	cropped_image.save(f"{directory}/plate.jpg")
 
