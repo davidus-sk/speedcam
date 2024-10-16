@@ -41,14 +41,11 @@ class DB {
 		}//if
 
 		foreach ($params as $key => $value) {
-			$stmt->bindValue($key, $value);
-			echo "$key => $value\n";
+			$stmt->bindValue($key + 1, $value);
 		}//foreach
 
-		echo $stmt->getSQL(true);
-
 		$result = $stmt->execute();
-		
+
 		if (!$result) {
 			die('Execute failed: ' . $this->conn->lastErrorMsg());
 		}//if
@@ -96,6 +93,6 @@ class DB {
 	 */
 	public function createSchemas() {
 		// create table detections
-		$this->conn->exec('CREATE TABLE IF NOT EXISTS detections (ts TEXT, month INTEGER, day INTEGER, hour INTEGER, year INTEGER, camera INTEGER, radar, speed REAL, plate TEXT, image1 TEXT, image2 TEXT)');
+		$this->conn->exec('CREATE TABLE IF NOT EXISTS detections (ts TEXT, month INTEGER, day INTEGER, hour INTEGER, year INTEGER, camera INTEGER, radar TEXT, speed REAL, plate TEXT, image1 TEXT, image2 TEXT)');
 	}//function
 }//class
