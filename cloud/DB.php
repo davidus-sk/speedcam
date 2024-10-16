@@ -42,6 +42,7 @@ class DB {
 
 		foreach ($params as $key => $value) {
 			$stmt->bindValue($key, $value);
+			echo "$key => $value\n";
 		}//foreach
 
 		echo $stmt->getSQL(true);
