@@ -12,10 +12,6 @@ if (file_exists($config_file)) {
 // get camera and radar data
 $image_left = ['ts'=>0, 'name'=>null];
 $image_right = ['ts'=>0, 'name'=>null];
-$speed_left = file_get_contents("/dev/shm/{$conf['left']['radar']}.speed");
-$speed_right = file_get_contents("/dev/shm/{$conf['right']['radar']}.speed");
-$top_speed_left = file_get_contents("/dev/shm/{$conf['left']['radar']}.top");
-$top_speed_right = file_get_contents("/dev/shm/{$conf['right']['radar']}.top");
 
 foreach (glob("/dev/shm/frames/0_*.jpg") as $filename) {
 	if ($image_left['ts'] < filemtime($filename)) {
@@ -55,9 +51,12 @@ $cam1_results_speed = $db->query('SELECT hour, max(speed) as mspeed FROM detecti
 $cam0_day_cnt = [];
 $cam0_day_cnt_y = [];
 $cam0_day_speed = [];
+$cam0_top_speed = 0;
+
 $cam1_day_cnt = [];
 $cam1_day_cnt_y = [];
 $cam1_day_speed = [];
+$cam1_top_speed = 0;
 
 while ($row = $cam0_results_cnt->fetchArray()) {
 	$cam0_day_cnt[$row['hour']] = $row['cnt'];
@@ -77,10 +76,18 @@ while ($row = $cam1_results_cnt_y->fetchArray()) {
 
 while ($row = $cam0_results_speed->fetchArray()) {
 	$cam0_day_speed[$row['hour']] = $row['mspeed'];
+
+	if($row['mspeed'] > $cam0_top_speed) {
+		$cam0_top_speed = $row['mspeed'];
+	}//if
 }//while
 
 while ($row = $cam1_results_speed->fetchArray()) {
 	$cam1_day_speed[$row['hour']] = $row['mspeed'];
+
+	if($row['mspeed'] > $cam1_top_speed) {
+		$cam1_top_speed = $row['mspeed'];
+	}//if
 }//while
 
 // fill empty hours for graphing purposes
@@ -138,7 +145,7 @@ $db->close();
 				<div class="w3-container">
 					<div class="w3-col m6">
 						<p>Channel number: <?php echo $conf["left"]["camera"]; ?></p>
-						<p>Top speed: <?php echo $top_speed_left; ?> km/h</p>
+						<p>Top speed: <?php echo $cam0_top_speed; ?> km/h</p>
 					</div>
 					<div class="w3-col m6">
 						<p>Radar serial: <?php echo substr($conf["left"]["radar"], 0, 8); ?></p>
@@ -157,7 +164,7 @@ $db->close();
 				<div class="w3-container">
 					<div class="w3-col m6">
 						<p>Channel number: <?php echo $conf["right"]["camera"]; ?></p>
-						<p>Top speed: <?php echo $top_speed_right; ?> km/h</p>
+						<p>Top speed: <?php echo $cam1_top_speed; ?> km/h</p>
 					</div>
 					<div class="w3-col m6">
 						<p>Radar serial: <?php echo substr($conf["right"]["radar"], 0, 8); ?></p>
@@ -227,6 +234,8 @@ $db->close();
 					Free shmem: <?php echo trim(`/usr/bin/df | /usr/bin/awk '/([0-9]+)% \/dev\/shm/{print $5; exit}'`);?>
 					<span class="w3-text-light-blue">|</span>
 					Utilization: <?php echo trim(`/usr/bin/uptime | /usr/bin/awk '{print $11}' | /usr/bin/sed 's/,$//'`);?>
+					<span class="w3-text-light-blue">|</span>
+					Temperature: <?php echo floor(trim(`/usr/bin/cat /sys/class/thermal/thermal_zone0/temp`) / 1000); ?> &deg;C
 					</p>
 				</div>
 			</div>
