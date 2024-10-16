@@ -23,7 +23,7 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) 
 
   // store data
   // (time, month INTEGER, day INTEGER, hour INTEGER, year INTEGER, camera INTEGER, radar, speed REAL, plate, image1, image2)
-  $db->query('INSERT INTO detections VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [$ts, (int)$dt->format("n"), (int)$dt->format("j"), (int)$dt->format("G"), (int)$dt->format("Y"), $camera, $radar, $speed, null, null, null]);
+  $db->query('INSERT INTO detections VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [(string)$ts, (int)$dt->format("n"), (int)$dt->format("j"), (int)$dt->format("G"), (int)$dt->format("Y"), $camera, $radar, $speed, null, null, null]);
 
   echo "OK: {$db->lastInsertId()}";
   exit();
