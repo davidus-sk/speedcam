@@ -17,7 +17,8 @@
 			"video_url":"rtsp://10.225.5.2/#channel#/profile2/media.smp"
 		},
 		"api": {
-			"post_url":"http://10.225.0.1/"
-		}
+			"post_url":"http://deerwood.luceon.us/api.php"
+		},
+		"location":1
 	}
 }

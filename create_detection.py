@@ -73,16 +73,17 @@ if not os.path.exists(directory):
 
 # post detection to server
 """
+	('car', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
+	('plate', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
+"""
 multipart_form_data = (
-	('image1', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
-	('image2', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
-	('ts', (None, data["ts"])),
-	('radar', (None, data["radar"])),
-	('speed', (None, data["speed"])),
-	('direction', (None, data["direction"])),
-	('camera', (None, data["camera"])),
+	('ts', (None, ts)),
+	('radar', (None, radar)),
+	('speed', (None, speed)),
+	('direction', (None, direction)),
+	('location', (None, config["settings"]["location"])),
+	('camera', (None, camera)),
 )
 
 syslog.syslog(syslog.LOG_INFO, f'Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.')
 response = requests.post(config["settings"]["api"]["post_url"], files=multipart_form_data)
-"""
