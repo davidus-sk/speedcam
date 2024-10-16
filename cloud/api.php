@@ -11,11 +11,11 @@ $radar = empty($_POST['radar']) ? null : $_POST['radar'];
 $plate = empty($_FILES['plate']) ? null : $_FILES['plate'];
 $car = empty($_FILES['car']) ? null : $_FILES['car'];
 
-// date time
-$dt = new DateTime("@{$timestamp}", new DateTimeZone("America/New_York"));
-
 // save data
 if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) {
+  // date time
+  $dt = new DateTime("@{$timestamp}", new DateTimeZone("America/New_York"));
+  
   // init the schema
   $db->createSchemas();
 
