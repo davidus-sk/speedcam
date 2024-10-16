@@ -44,6 +44,8 @@ class DB {
 			$stmt->bindValue($key, $value);
 		}//foreach
 
+		echo $stmt->getSQL(true);
+
 		$result = $stmt->execute();
 		
 		if (!$result) {
