@@ -93,6 +93,6 @@ class DB {
 	 */
 	public function createSchemas() {
 		// create table detections
-		$this->conn->exec('CREATE TABLE IF NOT EXISTS detections (time, month INTEGER, day INTEGER, hour INTEGER, year INTEGER, camera INTEGER, radar, speed REAL, plate, image1, image2)');
+		$this->conn->exec('CREATE TABLE IF NOT EXISTS detections (time TEXT, month INTEGER, day INTEGER, hour INTEGER, year INTEGER, camera INTEGER, radar, speed REAL, plate TEXT, image1 TEXT, image2 TEXT)');
 	}//function
 }//class
