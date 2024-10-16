@@ -14,7 +14,7 @@ $car = empty($_FILES['car']) ? null : $_FILES['car'];
 // save data
 if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) {
   // date time
-  $dt = new DateTime("@{$timestamp}", new DateTimeZone("America/New_York"));
+  $dt = new DateTime("@{$ts}", new DateTimeZone("America/New_York"));
   
   // init the schema
   $db->createSchemas();
