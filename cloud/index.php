@@ -18,6 +18,7 @@ $count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts 
 $count_yesterweek_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtyw->getTimestamp(), $dtyw->getTimestamp()+604800]);
 
 // get data into arrays
+$top_speed = 0;
 $count_total = 0;
 $count_today = [];
 $count_yesterday = [];
@@ -41,6 +42,7 @@ while($row = $count_week_r->fetchArray()) {
 while($row = $count_yesterweek_r->fetchArray()) {
 	$dtw->setTimestamp($row['ts']);
 	$count_yesterweek[$dtw->format('l')]++;
+	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
 }//while
 
 // pad arrays
@@ -52,25 +54,26 @@ for ($i = 0; $i < 24; $i++) {
 ?>
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SHAME System Report</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  </head>
-  <body>
-    <div class="container">
-      <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
-        <div class="col-lg-6 px-0">
-          <h1 class="display-4 fst-italic">Title of a longer featured blog post</h1>
-          <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
-          <p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">Continue reading...</a></p>
-        </div>
-	<div class="col-lg-6 px-0">
-		<p class="lead my-3">Week #<?php echo date('W'); ?></p>
-		<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
-	</div>
-      </div>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>SHAME System Report</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	</head>
+	<body>
+		<div class="container">
+			<div class="p-4 p-md-5 mb-4 mt-4 rounded text-body-emphasis bg-body-secondary">
+				<div class="row">
+					<div class="col-lg-6 px-0">
+						<h1 class="display-4 fst-italic"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h1>
+					</div>
+					<div class="col-lg-6 px-0">
+						<p class="lead my-3"><b>Week #<?php echo date('W'); ?></b></p>
+						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
+						<p class="lead my-3">Top speed: <?php echo $top_speed * 0.621372; ?></p>
+					</div>
+				</div>
+			</div>
 
       <div class="row mb-4">
         <div class="col-md-12">
