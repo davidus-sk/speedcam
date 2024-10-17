@@ -2,17 +2,26 @@
 include 'DB.php';
 $db = new DB('speed_cloud.db');
 
+// time frames
 $dt = new DateTime('now', new DateTimeZone("America/New_York"));
 $dty = new DateTime('yesterday', new DateTimeZone("America/New_York"));
+
+$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
+$dtyw = new DateTime('Monday previous week 00:00:00', new DateTimeZone("America/New_York"));
 
 // get counts today and yesterday
 $count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
 $count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dty->format('n'), $dty->format('j'), $dty->format('Y')]);
 
+// get counts for this and last week
+$count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+$count_yesterweek_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtyw->getTimestamp(), $dtyw->getTimestamp()+604800]);
 
 // get data into arrays
 $count_today = [];
 $count_yesterday = [];
+$count_week = ['Monday'=>0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
+$count_yesterweek = ['Monday'=>0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
 
 while ($row = $count_today_r->fetchArray()) {
 	$count_today[$row['hour']] = $row['cnt'];
@@ -21,6 +30,22 @@ while ($row = $count_today_r->fetchArray()) {
 while ($row = $count_yesterday_r->fetchArray()) {
 	$count_yesterday[$row['hour']] = $row['cnt'];
 }//while
+
+while($row = $count_week_r->fetchArray()) {
+	$dtw->setTimestamp($row['ts']);
+	$count_week[$dtw->format('l')]++;
+}//while
+
+while($row = $count_yesterweek_r->fetchArray()) {
+	$dtw->setTimestamp($row['ts']);
+	$count_yesterweek[$dtw->format('l')]++;
+}//while
+
+// pad arrays
+for ($i = 0; $i < 24; $i++) {
+	$count_today[$i] = isset($count_today[$i]) ? $count_today[$i] : 0;
+	$count_yesterday[$i] = isset($count_yesterday[$i]) ? $count_yesterday[$i] : 0;
+}//for
 
 ?>
 <!doctype html>
@@ -61,9 +86,7 @@ while ($row = $count_yesterday_r->fetchArray()) {
               Speeding Detections by Day (this and last week)
             </div>
             <div class="card-body">
-              <h5 class="card-title">Special title treatment</h5>
-              <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
+              <canvas id="g_count_week" style="width:100%"></canvas>
             </div>
           </div>
         </div>
@@ -104,6 +127,10 @@ while ($row = $count_yesterday_r->fetchArray()) {
   	const count_today_x = <?php echo json_encode(array_keys($count_today)); ?>;
   	const count_today_y = <?php echo json_encode(array_values($count_today)); ?>;
   	const count_yesterday_y = <?php echo json_encode(array_values($count_yesterday)); ?>;
+
+  	const count_week_x = <?php echo json_encode(array_keys($count_week)); ?>;
+  	const count_week_y = <?php echo json_encode(array_values($count_week)); ?>;
+  	const count_yesterweek_y = <?php echo json_encode(array_values($count_yesterweek)); ?>;
   
     new Chart("g_count_today", {
       type: "bar",
@@ -115,6 +142,34 @@ while ($row = $count_yesterday_r->fetchArray()) {
         },
     	      {
           data: count_yesterday_y,
+          backgroundColor: "#8acbff"
+        }]
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: false,
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false // Disables grid lines on the x-axis
+            }
+          }],
+        }
+      }
+    });
+
+    new Chart("g_count_week", {
+      type: "bar",
+      data: {
+        labels: count_week_x,
+        datasets: [{
+          data: count_week_y,
+          backgroundColor: "#2196F3"
+        },
+    	      {
+          data: count_yestweek_y,
           backgroundColor: "#8acbff"
         }]
       },
