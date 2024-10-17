@@ -169,7 +169,7 @@ for ($i = 0; $i < 24; $i++) {
           backgroundColor: "#2196F3"
         },
     	      {
-          data: count_yestweek_y,
+          data: count_yesterweek_y,
           backgroundColor: "#8acbff"
         }]
       },
