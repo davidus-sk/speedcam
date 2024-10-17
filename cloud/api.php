@@ -22,6 +22,14 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) 
   
   // init the schema
   $db->createSchemas();
+
+  // check if we have this entry already
+  $row = $db->fetchRow('SELECT * FROM detections WHERE camera=? AND location=? AND ts=?', [$camera, $location, $ts]);
+
+  if ($row != false) {
+    echo "ERROR: EXISTS";
+    exit();
+  }
   
   // store data
   $db->query('INSERT INTO detections VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [$ts, (int)$dt->format("n"), (int)$dt->format("j"), (int)$dt->format("G"), (int)$dt->format("Y"), $camera, $radar, $speed, $direction, $location, null, null, null]);
