@@ -3,8 +3,8 @@ include 'DB.php';
 $db = new DB('speed_cloud.db');
 
 // get counts today and yesterday
-$count_today_r = $db->fetchResult('SELECT hour, count(time) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [date('n'), date('j'), date('Y')]);
-$count_yesterday_r = $db->fetchResult('SELECT hour, count(time) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [date('n', time() - 86400), date('j', time() - 86400), date('Y', time() - 86400)]);
+$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [date('n'), date('j'), date('Y')]);
+$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [date('n', time() - 86400), date('j', time() - 86400), date('Y', time() - 86400)]);
 
 
 // get data into arrays
