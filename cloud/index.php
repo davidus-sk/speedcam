@@ -18,6 +18,7 @@ $count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts 
 $count_yesterweek_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtyw->getTimestamp(), $dtyw->getTimestamp()+604800]);
 
 // get data into arrays
+$count_total = 0;
 $count_today = [];
 $count_yesterday = [];
 $count_week = ['Monday'=>0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
@@ -34,6 +35,7 @@ while ($row = $count_yesterday_r->fetchArray()) {
 while($row = $count_week_r->fetchArray()) {
 	$dtw->setTimestamp($row['ts']);
 	$count_week[$dtw->format('l')]++;
+	$count_total++;
 }//while
 
 while($row = $count_yesterweek_r->fetchArray()) {
@@ -64,6 +66,10 @@ for ($i = 0; $i < 24; $i++) {
           <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
           <p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">Continue reading...</a></p>
         </div>
+	<div class="col-lg-6 px-0">
+		<p class="lead my-3">Week #<?php echo date('W'); ?></p>
+		<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
+	</div>
       </div>
 
       <div class="row mb-4">
