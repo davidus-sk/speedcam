@@ -41,11 +41,11 @@ while ($row = $count_yesterday_r->fetchArray()) {
         </div>
       </div>
 
-      <div class="row mb-2">
+      <div class="row mb-4">
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">
-              Speeding Detections by Hour (today)
+              Speeding Detections by Hour (today and yesterday)
             </div>
             <div class="card-body">
               <canvas id="g_count_today" style="width:100%"></canvas>
@@ -54,11 +54,11 @@ while ($row = $count_yesterday_r->fetchArray()) {
         </div>
       </div>
 
-      <div class="row mb-2">
+      <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
             <div class="card-header">
-              Speeding Detections by Hour (week)
+              Speeding Detections by Day (this and last week)
             </div>
             <div class="card-body">
               <h5 class="card-title">Special title treatment</h5>
@@ -69,22 +69,7 @@ while ($row = $count_yesterday_r->fetchArray()) {
         </div>
       </div>
 
-      <div class="row mb-2">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header">
-              Speeding Detections by Day
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">Special title treatment</h5>
-              <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>  
-        </div>
-      </div>
-
-      <div class="row mb-2">
+      <div class="row mb-4">
         <div class="col-md-6">
           <div class="card">
             <div class="card-header">
