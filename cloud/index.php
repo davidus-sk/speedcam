@@ -19,6 +19,7 @@ $count_yesterweek_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? A
 
 // get data into arrays
 $top_speed = 0;
+$speed_buckets = ['30' => 0, '40' => 0, '50' => 0, '60' => 0];
 $count_total = 0;
 $count_today = [];
 $count_yesterday = [];
@@ -38,6 +39,8 @@ while($row = $count_week_r->fetchArray()) {
 	$count_week[$dtw->format('l')]++;
 	$count_total++;
 	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
+	$speed_range = floor($row['speed'] / 10) * 10;
+	$speed_buckets[$speed_range]++;
 }//while
 
 while($row = $count_yesterweek_r->fetchArray()) {
@@ -71,6 +74,7 @@ for ($i = 0; $i < 24; $i++) {
 						<p class="lead my-3"><b>Week #<?php echo date('W'); ?></b></p>
 						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
 						<p class="lead my-3">Top speed: <?php echo floor($top_speed * 0.621372); ?> mph</p>
+						<p class="lead my-3">Speed limit: 30 mph</p>
 					</div>
 				</div>
 			</div>
@@ -108,9 +112,7 @@ for ($i = 0; $i < 24; $i++) {
               Speed Range Distribution
             </div>
             <div class="card-body">
-              <h5 class="card-title">Special title treatment</h5>
-              <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
+		<canvas id="g_speed_range" style="width:100%"></canvas>
             </div>
           </div>
         </div>
@@ -194,6 +196,23 @@ for ($i = 0; $i < 24; $i++) {
             }
           }],
         }
+      }
+    });
+
+    new Chart("g_speed_range", {
+      type: "pie",
+      data: {
+        labels: <?php echo json_encode(array_keys($speed_buckets)); ?>,
+        datasets: [{
+          data: <?php echo json_encode(array_values($speed_buckets)); ?>,
+        }]
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: false,
+        },
+        scales: { }
       }
     });
     </script>
