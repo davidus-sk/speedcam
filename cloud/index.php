@@ -56,7 +56,7 @@ for ($i = 0; $i < 24; $i++) {
 
 // sort the padded arrays
 ksort($count_today);
-ksort($count_yesterda);
+ksort($count_yesterday);
 
 ?>
 <!doctype html>
