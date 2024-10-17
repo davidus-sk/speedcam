@@ -2,9 +2,12 @@
 include 'DB.php';
 $db = new DB('speed_cloud.db');
 
+$dt = new DateTime('now', new DateTimeZone("America/New_York"));
+$dty = new DateTime('yesterday', new DateTimeZone("America/New_York"));
+
 // get counts today and yesterday
-$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [date('n'), date('j'), date('Y')]);
-$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [date('n', time() - 86400), date('j', time() - 86400), date('Y', time() - 86400)]);
+$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
+$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dty->format('n'), $dty->format('j'), $dty->format('Y')]);
 
 
 // get data into arrays
@@ -45,7 +48,7 @@ while ($row = $count_yesterday_r->fetchArray()) {
               Speeding Detections by Hour (today)
             </div>
             <div class="card-body">
-              <canvas id="g_cnt_today" style="width:100%"></canvas>
+              <canvas id="g_count_today" style="width:100%"></canvas>
             </div>
           </div>
         </div>
