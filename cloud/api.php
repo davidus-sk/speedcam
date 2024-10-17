@@ -4,7 +4,7 @@ include 'DB.php';
 $db = new DB('speed_cloud.db');
 
 // get posted data
-$camera = empty($_POST['camera']) ? null : (int)$_POST['camera'];
+$camera = !isset($_POST['camera']) ? null : (int)$_POST['camera'];
 $speed = empty($_POST['speed']) ? null : (float)$_POST['speed'];
 $ts = empty($_POST['ts']) ? null : $_POST['ts'];
 $radar = empty($_POST['radar']) ? null : $_POST['radar'];
