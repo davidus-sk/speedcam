@@ -54,15 +54,14 @@ class DB {
 	}//function
 
 	/**
-	 * Fetch all rows from a query
+	 * Fetch result from a query
 	 *
 	 * @param $sql
 	 * @param $params
-	 * @return array
+	 * @return object
 	 */
-	public function fetchAll($sql, $params = []) {
-		$result = $this->query($sql, $params);
-		return $result->fetchAll();
+	public function fetchResult($sql, $params = []) {
+		return $this->query($sql, $params);
 	}//function
 
 	/**
