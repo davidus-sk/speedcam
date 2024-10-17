@@ -34,6 +34,9 @@ except IOError:
 if len(sys.argv) < 3:
 	sys.exit()
 
+# make sure flashers are off
+os.system("/app/speed/flashers_off > /dev/null 2>&1 &")
+
 # global variables
 tty = sys.argv[1]
 radar = sys.argv[2]

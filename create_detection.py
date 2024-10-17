@@ -76,14 +76,9 @@ if not os.path.exists(directory):
 	('car', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
 	('plate', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
 """
-multipart_form_data = (
-	('ts', (None, ts)),
-	('radar', (None, radar)),
-	('speed', (None, speed)),
-	('direction', (None, direction)),
-	('location', (None, config["settings"]["location"])),
-	('camera', (None, camera)),
-)
+
+data = {"ts":ts, "radar":radar, "speed":speed, "direction":direction, "location":config["settings"]["location"], "camera":camera}
 
 syslog.syslog(syslog.LOG_INFO, f'Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.')
-response = requests.post(config["settings"]["api"]["post_url"], files=multipart_form_data)
+response = requests.post(config["settings"]["api"]["post_url"], data=data)
+syslog.syslog(syslog.LOG_DEBUG, f'Response from URL: {response.content}.')
