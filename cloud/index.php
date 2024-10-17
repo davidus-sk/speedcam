@@ -39,7 +39,7 @@ while($row = $count_week_r->fetchArray()) {
 	$count_week[$dtw->format('l')]++;
 	$count_total++;
 	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
-	$speed_range = floor($row['speed'] / 10) * 10;
+	$speed_range = floor($row['speed'] * 0.621372 / 10) * 10;
 	$speed_buckets[$speed_range]++;
 }//while
 
@@ -53,6 +53,10 @@ for ($i = 0; $i < 24; $i++) {
 	$count_today[$i] = isset($count_today[$i]) ? $count_today[$i] : 0;
 	$count_yesterday[$i] = isset($count_yesterday[$i]) ? $count_yesterday[$i] : 0;
 }//for
+
+// sort the padded arrays
+ksort($count_today);
+ksort($count_yesterda);
 
 ?>
 <!doctype html>
@@ -205,6 +209,12 @@ for ($i = 0; $i < 24; $i++) {
         labels: <?php echo json_encode(array_keys($speed_buckets)); ?>,
         datasets: [{
           data: <?php echo json_encode(array_values($speed_buckets)); ?>,
+		backgroundColor: [
+		'#FFD1DC',
+		'#B0D4F5',
+		'#F5F5B0',
+		'#B5E0C3'
+		],
         }]
       },
       options: {
