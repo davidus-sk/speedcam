@@ -80,5 +80,12 @@ if not os.path.exists(directory):
 data = {"ts":ts, "radar":radar, "speed":speed, "direction":direction, "location":config["settings"]["location"], "camera":camera}
 
 syslog.syslog(syslog.LOG_INFO, f'Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.')
-response = requests.post(config["settings"]["api"]["post_url"], data=data)
-syslog.syslog(syslog.LOG_DEBUG, f'Response from URL: {response.content}.')
+
+for x in [1,2,3]:
+	response = requests.post(config["settings"]["api"]["post_url"], data=data)
+	response_data = response.content.decode('UTF-8')
+	syslog.syslog(syslog.LOG_DEBUG, f'Response from URL: {response_data}.')
+	response.close()
+
+	if re.match(r"OK: [0-9]+", response_data):
+		break
