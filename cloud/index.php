@@ -37,12 +37,12 @@ while($row = $count_week_r->fetchArray()) {
 	$dtw->setTimestamp($row['ts']);
 	$count_week[$dtw->format('l')]++;
 	$count_total++;
+	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
 }//while
 
 while($row = $count_yesterweek_r->fetchArray()) {
 	$dtw->setTimestamp($row['ts']);
 	$count_yesterweek[$dtw->format('l')]++;
-	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
 }//while
 
 // pad arrays
@@ -70,7 +70,7 @@ for ($i = 0; $i < 24; $i++) {
 					<div class="col-lg-6 px-0">
 						<p class="lead my-3"><b>Week #<?php echo date('W'); ?></b></p>
 						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
-						<p class="lead my-3">Top speed: <?php echo $top_speed * 0.621372; ?></p>
+						<p class="lead my-3">Top speed: <?php echo floor($top_speed * 0.621372); ?> mph</p>
 					</div>
 				</div>
 			</div>
