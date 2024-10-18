@@ -94,7 +94,7 @@ ksort($count_yesterday);
           <div class="card">
             <div class="card-header">
               <b>Speeding Detections by Hour</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">yesterday</span>
-			<a href="/download.php?tf=day" class="float-end">Raw data</a>
+			<a href="/download.php?tf=day" class="float-end">Download CSV</a>
             </div>
             <div class="card-body">
               <canvas id="g_count_today" style="width:100%"></canvas>
