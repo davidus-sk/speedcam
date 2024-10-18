@@ -92,7 +92,7 @@ ksort($count_yesterday);
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">
-              Speeding Detections by Hour (today and yesterday)
+              Speeding Detections by Hour (<span class="badge text-bg-primary" style="background-color:#2196F3">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff">yesterday</span>)
             </div>
             <div class="card-body">
               <canvas id="g_count_today" style="width:100%"></canvas>
