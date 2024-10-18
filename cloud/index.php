@@ -92,7 +92,7 @@ ksort($count_yesterday);
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">
-              <b>Speeding Detections by Hour</b> (<span class="badge text-bg-primary" style="background-color:#2196F3 !importat">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !importat">yesterday</span>)
+              <b>Speeding Detections by Hour</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">yesterday</span>
             </div>
             <div class="card-body">
               <canvas id="g_count_today" style="width:100%"></canvas>
@@ -105,7 +105,7 @@ ksort($count_yesterday);
         <div class="col-md-12">
             <div class="card">
             <div class="card-header">
-              Speeding Detections by Day (this and last week)
+              <b>Speeding Detections by Day</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">this</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">last</span> week
             </div>
             <div class="card-body">
               <canvas id="g_count_week" style="width:100%"></canvas>
