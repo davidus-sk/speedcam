@@ -45,7 +45,7 @@ while($row = $count_week_r->fetchArray()) {
 	$speed_buckets[$speed_range]++;
 	$average_week_i[$dtw->format('l')][0] = $average_week_i[$dtw->format('l')][0] + ($row['speed'] * 0.621372);
 	$average_week_i[$dtw->format('l')][1]++;
-	$average_week[$dtw->format('l')] = $average_week_i[$dtw->format('l')][0] / $average_week_i[$dtw->format('l')][1];
+	$average_week[$dtw->format('l')] = round($average_week_i[$dtw->format('l')][0] / $average_week_i[$dtw->format('l')][1]);
 }//while
 
 while($row = $count_yesterweek_r->fetchArray()) {
@@ -77,7 +77,7 @@ ksort($count_yesterday);
 			<div class="p-4 p-md-5 mb-4 mt-4 rounded text-body-emphasis bg-body-secondary">
 				<div class="row">
 					<div class="col-lg-8 px-0">
-						<h2 class="display-4 fst-italic"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h2>
+						<h2 class="display-3"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h2>
 						<h4>Deerwood, Jacksonville, Florida 32256</h4>
 					</div>
 					<div class="col-lg-4 px-0">
@@ -92,11 +92,9 @@ ksort($count_yesterday);
       <div class="row mb-4">
         <div class="col-md-12">
           <div class="card">
-            <div class="card-header d-flex">
+            <div class="card-header">
               <b>Speeding Detections by Hour</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">yesterday</span>
-		    <div class="d-flex ms-auto">
-			    <a href="/download.php?tf=day">Raw data</a>
-		    </div>
+			<a href="/download.php?tf=day" class="float-end">Raw data</a>
             </div>
             <div class="card-body">
               <canvas id="g_count_today" style="width:100%"></canvas>
