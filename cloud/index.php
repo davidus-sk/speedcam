@@ -43,7 +43,7 @@ while($row = $count_week_r->fetchArray()) {
 	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
 	$speed_range = floor($row['speed'] * 0.621372 / 10) * 10;
 	$speed_buckets[$speed_range]++;
-	$average_week_i[$dtw->format('l')][0] = $average_week_i[$dtw->format('l')][0] + $row['speed'];
+	$average_week_i[$dtw->format('l')][0] = $average_week_i[$dtw->format('l')][0] + ($row['speed'] * 0.621372);
 	$average_week_i[$dtw->format('l')][1]++;
 	$average_week[$dtw->format('l')] = $average_week_i[$dtw->format('l')][0] / $average_week_i[$dtw->format('l')][1];
 }//while
