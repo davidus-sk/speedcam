@@ -13,7 +13,7 @@ $dt = new DateTime('now', new DateTimeZone("America/New_York"));
 switch ($tf) {
   // day
   case 'day': {
-    $result = $db->fetchResult('SELECT * FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
+    $result = $db->fetchResult('SELECT * FROM detections WHERE month=? AND day=? AND year=?', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
   } break;
 
   // error
