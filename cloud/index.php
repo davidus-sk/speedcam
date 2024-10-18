@@ -221,7 +221,26 @@ ksort($count_yesterday);
 		options: {
 			legend: {display: false},
 			title: {display: false},
-			scales: { }
+			scales: { },
+    plugins: {
+      datalabels: {
+        display: true,
+        formatter: (val, ctx) => {
+          // Grab the label for this value
+          const label = ctx.chart.data.labels[ctx.dataIndex];
+
+          // Format the number with 2 decimal places
+          const formattedVal = Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+          }).format(val);
+
+          // Put them together
+          return `${label}: ${formattedVal}`;
+        },
+        color: '#fff',
+        backgroundColor: '#404040',
+      },
+    },
 		}
 	});
 
