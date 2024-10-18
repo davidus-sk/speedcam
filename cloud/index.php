@@ -78,6 +78,7 @@ ksort($count_yesterday);
 				<div class="row">
 					<div class="col-lg-8 px-0">
 						<h2 class="display-4 fst-italic"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h2>
+						<h4>Deerwood, Jacksonville, Florida 32256</h4>
 					</div>
 					<div class="col-lg-4 px-0">
 						<p class="lead my-3"><b>Week #<?php echo date('W'); ?></b></p>
@@ -93,6 +94,9 @@ ksort($count_yesterday);
           <div class="card">
             <div class="card-header">
               <b>Speeding Detections by Hour</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">yesterday</span>
+		    <div class="d-flex ms-auto">
+			    <a href="/download.php?tf=day" class="btn btn-primary btn-sm">Raw data</a>
+		    </div>
             </div>
             <div class="card-body">
               <canvas id="g_count_today" style="width:100%"></canvas>
@@ -106,6 +110,7 @@ ksort($count_yesterday);
             <div class="card">
             <div class="card-header">
               <b>Speeding Detections by Day</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">this</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">last</span> week
+		
             </div>
             <div class="card-body">
               <canvas id="g_count_week" style="width:100%"></canvas>
@@ -118,7 +123,7 @@ ksort($count_yesterday);
         <div class="col-md-6">
           <div class="card">
             <div class="card-header">
-              Speed Range Distribution
+              <b>Speed Range Distribution</b>
             </div>
             <div class="card-body">
 		<canvas id="g_speed_range" style="width:100%"></canvas>
@@ -128,7 +133,7 @@ ksort($count_yesterday);
         <div class="col-md-6">
           <div class="card">
             <div class="card-header">
-              Average Speed by Day
+              <b>Average Speed by Day</b>
             </div>
             <div class="card-body">
 		<canvas id="g_speed_average" style="width:100%"></canvas>
