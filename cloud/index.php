@@ -23,8 +23,10 @@ $speed_buckets = ['30' => 0, '40' => 0, '50' => 0, '60' => 0];
 $count_total = 0;
 $count_today = [];
 $count_yesterday = [];
-$count_week = ['Monday'=>0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
-$count_yesterweek = ['Monday'=>0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
+$count_week = ['Monday' => 0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
+$count_yesterweek = ['Monday' => 0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
+$average_week_i = ['Monday' => [0,0], 'Tuesday' => [0,0], 'Wednesday' => [0,0], 'Thursday' => [0,0], 'Friday' => [0,0], 'Saturday' => [0,0], 'Sunday' => [0,0]];
+$average_week = ['Monday' => 0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
 
 while ($row = $count_today_r->fetchArray()) {
 	$count_today[$row['hour']] = $row['cnt'];
@@ -41,6 +43,9 @@ while($row = $count_week_r->fetchArray()) {
 	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
 	$speed_range = floor($row['speed'] * 0.621372 / 10) * 10;
 	$speed_buckets[$speed_range]++;
+	$average_week_i[$dtw->format('l')][0] = $average_week_i[$dtw->format('l')][0] + $row['speed'];
+	$average_week_i[$dtw->format('l')][1]++;
+	$average_week[$dtw->format('l')] = $average_week_i[$dtw->format('l')][0] / $average_week_i[$dtw->format('l')][1];
 }//while
 
 while($row = $count_yesterweek_r->fetchArray()) {
@@ -71,10 +76,10 @@ ksort($count_yesterday);
 		<div class="container">
 			<div class="p-4 p-md-5 mb-4 mt-4 rounded text-body-emphasis bg-body-secondary">
 				<div class="row">
-					<div class="col-lg-6 px-0">
-						<h1 class="display-4 fst-italic"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h1>
+					<div class="col-lg-8 px-0">
+						<h2 class="display-4 fst-italic"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h2>
 					</div>
-					<div class="col-lg-6 px-0">
+					<div class="col-lg-4 px-0">
 						<p class="lead my-3"><b>Week #<?php echo date('W'); ?></b></p>
 						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
 						<p class="lead my-3">Top speed: <?php echo floor($top_speed * 0.621372); ?> mph</p>
@@ -126,9 +131,7 @@ ksort($count_yesterday);
               Average Speed by Day
             </div>
             <div class="card-body">
-              <h5 class="card-title">Special title treatment</h5>
-              <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
+		<canvas id="g_speed_average" style="width:100%"></canvas>
             </div>
           </div>  
         </div>
@@ -146,6 +149,7 @@ ksort($count_yesterday);
   	const count_week_x = <?php echo json_encode(array_keys($count_week)); ?>;
   	const count_week_y = <?php echo json_encode(array_values($count_week)); ?>;
   	const count_yesterweek_y = <?php echo json_encode(array_values($count_yesterweek)); ?>;
+	const average_week_y = <?php echo json_encode(array_values($average_week)); ?>;
   
     new Chart("g_count_today", {
       type: "bar",
@@ -203,18 +207,31 @@ ksort($count_yesterday);
       }
     });
 
-    new Chart("g_speed_range", {
-      type: "pie",
+	new Chart("g_speed_range", {
+		type: "pie",
+		data: {
+			labels: <?php echo json_encode(array_keys($speed_buckets)); ?>,
+			datasets: [{
+			data: <?php echo json_encode(array_values($speed_buckets)); ?>,
+			backgroundColor: [
+				'#FF0000', '#00FF00', '#0000FF', '#FFFF00'
+			],
+			}]
+		},
+		options: {
+			legend: {display: false},
+			title: {display: false},
+			scales: { }
+		}
+	});
+
+    new Chart("g_speed_average", {
+      type: "bar",
       data: {
-        labels: <?php echo json_encode(array_keys($speed_buckets)); ?>,
+        labels: count_week_x,
         datasets: [{
-          data: <?php echo json_encode(array_values($speed_buckets)); ?>,
-		backgroundColor: [
-		'#FFD1DC',
-		'#B0D4F5',
-		'#F5F5B0',
-		'#B5E0C3'
-		],
+          data: average_week_y,
+          backgroundColor: "#2196F3"
         }]
       },
       options: {
@@ -222,9 +239,15 @@ ksort($count_yesterday);
         title: {
           display: false,
         },
-        scales: { }
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false // Disables grid lines on the x-axis
+            }
+          }],
+        }
       }
     });
-    </script>
-  </body>
+	</script>
+	</body>
 </html>
