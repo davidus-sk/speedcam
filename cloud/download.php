@@ -28,7 +28,7 @@ header('Content-Type: text/csv');
 header('Content-Disposition: attachment; filename=speed-report-' . $dt->format("Ymd_His") . '.csv'); 
 
 // spit out data
-echo "Year,Month,Day,Time,Speed,Direction\r\n"
+echo "Year,Month,Day,Time,Speed,Direction\r\n";
   
 while($row = $result->fetchArray()) {
   $speed = round($row['speed'] * 0.621372);
@@ -36,5 +36,5 @@ while($row = $result->fetchArray()) {
   $d->setTimestamp($row['ts']);
   $time = $d->format("H:i:s");
   
-  echo "{$row['year']},{$row['month']},{$row['day']},{$time},{$speed},{$row['direction']}\r\n"
+  echo "{$row['year']},{$row['month']},{$row['day']},{$time},{$speed},{$row['direction']}\r\n";
 }//while
