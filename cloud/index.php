@@ -89,33 +89,39 @@ ksort($count_yesterday);
 				</div>
 			</div>
 
-      <div class="row mb-4">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header">
-              <b>Speeding Detections by Hour</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">yesterday</span>
-			<a href="/download.php?tf=day" class="float-end">Download CSV</a>
-            </div>
-            <div class="card-body">
-              <canvas id="g_count_today" style="width:100%"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
+			<div class="row mb-4">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<b>Speeding Detections by Hour</b> 
+							<a href="/download.php?tf=day" class="float-end">Download CSV</a>
+						</div>
+						<div class="card-body">
+							<canvas id="g_count_today" style="width:100%"></canvas>
+						</div>
+						<div class="card-footer">
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">yesterday</span>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
-            <div class="card-header">
-              <b>Speeding Detections by Day</b> <span class="badge text-bg-primary" style="background-color:#2196F3 !important">this</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">last</span> week
-		
-            </div>
-            <div class="card-body">
-              <canvas id="g_count_week" style="width:100%"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
+			<div class="row mb-4">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<b>Speeding Detections by Day</b>
+							<a href="/download.php?tf=week" class="float-end">Download CSV</a>
+						</div>
+						<div class="card-body">
+							<canvas id="g_count_week" style="width:100%"></canvas>
+						</div>
+						<div class="card-footer">
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">this</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">last</span> week
+						</div>
+					</div>
+				</div>
+			</div>
 
       <div class="row mb-4">
         <div class="col-md-6">
