@@ -16,12 +16,18 @@ switch ($tf) {
     $result = $db->fetchResult('SELECT * FROM detections WHERE month=? AND day=? AND year=?', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
   } break;
 
+  // week
+  case 'week': {
+    $dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
+    $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+  } break;
+
   // error
   default: {
     echo "ERROR";
     exit();
   }
-}
+}//switch
 
 header('Content-Description: File Transfer');
 header('Content-Type: text/csv');
