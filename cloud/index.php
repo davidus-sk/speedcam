@@ -2,12 +2,28 @@
 include 'DB.php';
 $db = new DB('speed_cloud.db');
 
+// get week number
+$week = $_GET['week'];
+
+if (!empty($week)) {
+	$day_offset = ($week - 1) * 7;
+	$dayy_offset = ($week - 2) * 7;
+	
+	$dtw = new DateTime(date('Y-01-01 00:00:00'), new DateTimeZone("America/New_York"));
+	$dtyw = new DateTime(date('Y-01-01 00:00:00'), new DateTimeZone("America/New_York"));
+
+	$dtw->modify("+{$day_offset} days");
+	$dtyw->modify("+{$dayy_offset} days");
+} else {
+	$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
+	$dtyw = new DateTime('Monday previous week 00:00:00', new DateTimeZone("America/New_York"));
+}
+
 // time frames
 $dt = new DateTime('now', new DateTimeZone("America/New_York"));
 $dty = new DateTime('yesterday', new DateTimeZone("America/New_York"));
 
-$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
-$dtyw = new DateTime('Monday previous week 00:00:00', new DateTimeZone("America/New_York"));
+
 
 // get counts today and yesterday
 $count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
@@ -95,12 +111,10 @@ ksort($count_yesterday);
 						<div class="card-body">
 							Week number:
 							<?php
-							for ($i=1; $i<=42;$i++) {
-								echo '<a href="">'. $i . '</a>, ';
+							for ($i=1; $i<=52;$i++) {
+								echo '<a href="/?week=' . $i . '" class="' . ($i==date('W') ? 'badge text-bg-primary' : ''.'">'. $i . '</a>, ';
 							}
 							?>
-
-							<a href="">this week</a>
 						</div>
 					</div>
 				</div>
@@ -149,7 +163,7 @@ ksort($count_yesterday);
             <div class="card-body">
 		<canvas id="g_speed_range" style="width:100%"></canvas>
             </div>
-						<div class="card-footer">Speed groupd
+						<div class="card-footer">Speed groups
 							<span class="badge text-bg-primary" style="background-color:#FF0000 !important">30-39 mph</span>,
 							<span class="badge text-bg-primary" style="background-color:#00d700 !important">40-49 mph</span>,
 							<span class="badge text-bg-primary" style="background-color:#0000FF !important">50-59 mph</span>, and
