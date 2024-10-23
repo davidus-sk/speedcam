@@ -112,7 +112,7 @@ ksort($count_yesterday);
 							Week:
 							<?php
 							for ($i=1; $i<=date('W');$i++) {
-								echo '<a href="/?week=' . $i . '" class="badge ' . ($i==date('W') ? 'text-bg-secondary ' : '') . ($i==$week ? 'text-bg-primary' : '') . '">'. $i . '</a>, ';
+								echo '<a href="/?week=' . $i . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : '') . ($i==date('W') ? ' text-bg-secondary ' : '') . ' text-bg-white">'. $i . '</a>, ';
 							}
 							?>
 						</div>
