@@ -92,12 +92,16 @@ ksort($count_yesterday);
 			<div class="row mb-4">
 				<div class="col-md-12">
 					<div class="card">
-						Week number:
-						<?php
-						for ($i=1; $i<=42;$i++) {
-							echo '<a href="">{$i}</a> ';
-						}
-						?>
+						<div class="card-body">
+							Week number:
+							<?php
+							for ($i=1; $i<=42;$i++) {
+								echo '<a href="">'. $i . '</a>, ';
+							}
+							?>
+
+							<a href="">this week</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -145,11 +149,11 @@ ksort($count_yesterday);
             <div class="card-body">
 		<canvas id="g_speed_range" style="width:100%"></canvas>
             </div>
-						<div class="card-footer">
+						<div class="card-footer">Speed groupd
 							<span class="badge text-bg-primary" style="background-color:#FF0000 !important">30-39 mph</span>,
-							<span class="badge text-bg-primary" style="background-color:#00FF00 !important">40-49 mph</span>,
-							<span class="badge text-bg-primary" style="background-color:#0000FF !important">50-59 mph</span>,
-							<span class="badge text-bg-primary" style="background-color:#FFFF00 !important">60+ mph</span>
+							<span class="badge text-bg-primary" style="background-color:#00d700 !important">40-49 mph</span>,
+							<span class="badge text-bg-primary" style="background-color:#0000FF !important">50-59 mph</span>, and
+							<span class="badge text-bg-primary" style="background-color:#f3c50f !important">60+ mph</span>
 						</div>
           </div>
         </div>
@@ -242,7 +246,7 @@ ksort($count_yesterday);
 			datasets: [{
 			data: <?php echo json_encode(array_values($speed_buckets)); ?>,
 			backgroundColor: [
-				'#FF0000', '#00FF00', '#0000FF', '#FFFF00'
+				'#FF0000', '#00d700', '#0000FF', '#f3c50f'
 			],
 			}]
 		},
