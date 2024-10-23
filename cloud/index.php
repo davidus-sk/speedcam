@@ -76,15 +76,28 @@ ksort($count_yesterday);
 		<div class="container">
 			<div class="p-4 p-md-5 mb-4 mt-4 rounded text-body-emphasis bg-body-secondary">
 				<div class="row">
-					<div class="col-lg-8 px-0">
+					<div class="col-lg-9 px-0">
 						<h2 class="display-3"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h2>
 						<h4>Deerwood, Jacksonville, Florida 32256</h4>
 					</div>
-					<div class="col-lg-4 px-0">
+					<div class="col-lg-3 px-0">
 						<p class="lead my-3"><b>Week #<?php echo date('W'); ?></b></p>
 						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
 						<p class="lead my-3">Top speed: <?php echo floor($top_speed * 0.621372); ?> mph</p>
 						<p class="lead my-3">Speed limit: 30 mph</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row mb-4">
+				<div class="col-md-12">
+					<div class="card">
+						Week number:
+						<?php
+						for ($i=1; $i<=42;$i++) {
+							echo '<a href="">{$i}</a> ';
+						}
+						?>
 					</div>
 				</div>
 			</div>
@@ -132,6 +145,12 @@ ksort($count_yesterday);
             <div class="card-body">
 		<canvas id="g_speed_range" style="width:100%"></canvas>
             </div>
+						<div class="card-footer">
+							<span class="badge text-bg-primary" style="background-color:#FF0000 !important">30-39 mph</span>,
+							<span class="badge text-bg-primary" style="background-color:#00FF00 !important">40-49 mph</span>,
+							<span class="badge text-bg-primary" style="background-color:#0000FF !important">50-59 mph</span>,
+							<span class="badge text-bg-primary" style="background-color:#FFFF00 !important">60+ mph</span>
+						</div>
           </div>
         </div>
         <div class="col-md-6">
