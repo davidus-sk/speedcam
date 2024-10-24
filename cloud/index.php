@@ -53,20 +53,22 @@ while ($row = $count_yesterday_r->fetchArray()) {
 }//while
 
 while($row = $count_week_r->fetchArray()) {
-	$dtw->setTimestamp($row['ts']);
-	$count_week[$dtw->format('l')]++;
+	$d = new DateTime('now', new DateTimeZone("America/New_York"));
+	$d->setTimestamp($row['ts']);
+	$count_week[$d->format('l')]++;
 	$count_total++;
 	$top_speed = $row['speed'] > $top_speed ? $row['speed'] : $top_speed;
 	$speed_range = floor($row['speed'] * 0.621372 / 10) * 10;
 	$speed_buckets[$speed_range]++;
-	$average_week_i[$dtw->format('l')][0] = $average_week_i[$dtw->format('l')][0] + ($row['speed'] * 0.621372);
-	$average_week_i[$dtw->format('l')][1]++;
-	$average_week[$dtw->format('l')] = round($average_week_i[$dtw->format('l')][0] / $average_week_i[$dtw->format('l')][1]);
+	$average_week_i[$d->format('l')][0] = $average_week_i[$d->format('l')][0] + ($row['speed'] * 0.621372);
+	$average_week_i[$d->format('l')][1]++;
+	$average_week[$d->format('l')] = round($average_week_i[$d->format('l')][0] / $average_week_i[$d->format('l')][1]);
 }//while
 
 while($row = $count_yesterweek_r->fetchArray()) {
-	$dtw->setTimestamp($row['ts']);
-	$count_yesterweek[$dtw->format('l')]++;
+	$d = new DateTime('now', new DateTimeZone("America/New_York"));
+	$d->setTimestamp($row['ts']);
+	$count_yesterweek[$d->format('l')]++;
 }//while
 
 // pad arrays
