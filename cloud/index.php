@@ -16,7 +16,7 @@ if (!empty($week) && ($week != date('W'))) {
 	$dtyw->modify("+{$dayy_offset} days");
 
 	// get counts week
-	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+86400]);
+	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
 	$count_yesterday_r = null;
 } else {
 	$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
@@ -136,7 +136,7 @@ ksort($count_yesterday);
 							<canvas id="g_count_today" style="width:100%"></canvas>
 						</div>
 						<div class="card-footer">
-							<?php if ($week == date('W')) { ?>
+							<?php if (empty($week) || $week == date('W')) { ?>
 							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->format('l'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->format('l'); ?></span>
 							<?php } else { ?>
 							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dt->format('W'); ?></span>
