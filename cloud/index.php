@@ -16,7 +16,7 @@ if (!empty($week) && ($week != date('W'))) {
 	$dtyw->modify("+{$dayy_offset} days");
 
 	// get counts week
-	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+86400]]);
+	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+86400]);
 	$count_yesterday_r = null;
 } else {
 	$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
@@ -26,7 +26,7 @@ if (!empty($week) && ($week != date('W'))) {
 	$dty = new DateTime('yesterday 00:00:00', new DateTimeZone("America/New_York"));
 
 	// get counts today and yesterday
-	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dt->getTimestamp(), $dt->getTimestamp()+86400]]);
+	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dt->getTimestamp(), $dt->getTimestamp()+86400]);
 	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dty->getTimestamp(), $dty->getTimestamp()+86400]);
 }
 
