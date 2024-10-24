@@ -139,7 +139,7 @@ ksort($count_yesterday);
 							<?php if (empty($week) || $week == date('W')) { ?>
 							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->format('l'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->format('l'); ?></span>
 							<?php } else { ?>
-							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dt->format('W'); ?></span>
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dtw->format('W'); ?></span>
 							<?php } ?>
 						</div>
 					</div>
