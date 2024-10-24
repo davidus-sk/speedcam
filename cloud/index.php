@@ -17,7 +17,7 @@ if (!empty($week) && ($week != date('W'))) {
 
 	// get counts week
 	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dtw->getTimestamp(), $dtw->getTimestamp() + 604800]);
-	$count_yesterday_r = new SQLite3Result();
+	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE 1=0');
 } else {
 	$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
 	$dtyw = new DateTime('Monday previous week 00:00:00', new DateTimeZone("America/New_York"));
