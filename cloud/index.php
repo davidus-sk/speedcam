@@ -5,7 +5,7 @@ $db = new DB('speed_cloud.db');
 // get week number
 $week = $_GET['week'];
 
-if (!empty($week)) {
+if (!empty($week) || ($week != date('W'))) {
 	$day_offset = ($week - 1) * 7;
 	$dayy_offset = ($week - 2) * 7;
 	
