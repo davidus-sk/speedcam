@@ -14,20 +14,21 @@ if (!empty($week) && ($week != date('W'))) {
 
 	$dtw->modify("+{$day_offset} days");
 	$dtyw->modify("+{$dayy_offset} days");
+
+	// get counts week
+	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+86400]]);
+	$count_yesterday_r = null;
 } else {
 	$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
 	$dtyw = new DateTime('Monday previous week 00:00:00', new DateTimeZone("America/New_York"));
+
+	$dt = new DateTime('today 00:00:00', new DateTimeZone("America/New_York"));
+	$dty = new DateTime('yesterday 00:00:00', new DateTimeZone("America/New_York"));
+
+	// get counts today and yesterday
+	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dt->getTimestamp(), $dt->getTimestamp()+86400]]);
+	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ?', [$dty->getTimestamp(), $dty->getTimestamp()+86400]);
 }
-
-// time frames
-$dt = new DateTime('now', new DateTimeZone("America/New_York"));
-$dty = new DateTime('yesterday', new DateTimeZone("America/New_York"));
-
-
-
-// get counts today and yesterday
-$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
-$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dty->format('n'), $dty->format('j'), $dty->format('Y')]);
 
 // get counts for this and last week
 $count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
@@ -135,7 +136,11 @@ ksort($count_yesterday);
 							<canvas id="g_count_today" style="width:100%"></canvas>
 						</div>
 						<div class="card-footer">
+							<?php if ($week == date('W')) { ?>
 							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->format('l'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->format('l'); ?></span>
+							<?php } else { ?>
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dt->format('W'); ?></span>
+							<?php } ?>
 						</div>
 					</div>
 				</div>
