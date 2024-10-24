@@ -113,8 +113,10 @@ ksort($count_yesterday);
 						<div class="card-body">
 							Week:
 							<?php
-							for ($i=1; $i<=date('W');$i++) {
-								echo '<a href="/?week=' . $i . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
+							for ($i=date('W') - 15; $i<=date('W'); $i++) {
+								if ($i >= 1) {
+									echo '<a href="/?week=' . $i . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
+								}
 							}
 							?>
 						</div>
@@ -133,7 +135,7 @@ ksort($count_yesterday);
 							<canvas id="g_count_today" style="width:100%"></canvas>
 						</div>
 						<div class="card-footer">
-							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">today</span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">yesterday</span>
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->formt('l'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->formt('l'); ?></span>
 						</div>
 					</div>
 				</div>
