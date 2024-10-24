@@ -135,7 +135,7 @@ ksort($count_yesterday);
 							<canvas id="g_count_today" style="width:100%"></canvas>
 						</div>
 						<div class="card-footer">
-							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->formt('l'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->formt('l'); ?></span>
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->format('l'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->format('l'); ?></span>
 						</div>
 					</div>
 				</div>
