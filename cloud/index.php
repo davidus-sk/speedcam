@@ -172,7 +172,7 @@ ksort($count_yesterday);
             <div class="card-body">
 		<canvas id="g_speed_range" style="width:100%"></canvas>
             </div>
-						<div class="card-footer">Speed groups
+						<div class="card-footer">
 							<span class="badge text-bg-primary" style="background-color:#00d700 !important">30-39 mph</span>,
 							<span class="badge text-bg-primary" style="background-color:#0000FF !important">40-49 mph</span>,
 							<span class="badge text-bg-primary" style="background-color:#f3c50f !important">50-59 mph</span>, and
@@ -188,6 +188,10 @@ ksort($count_yesterday);
             <div class="card-body">
 		<canvas id="g_speed_average" style="width:100%"></canvas>
             </div>
+		  						<div class="card-footer">
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dtw->format('W'); ?></span>
+
+						</div>
           </div>  
         </div>
       </div>
