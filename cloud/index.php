@@ -130,7 +130,7 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Speeding Detections by Hour</b> 
-							<a href="/list.php?tf=day" class="float-end">List offenders</a> | <a href="/download.php?tf=day" class="float-end">Download CSV</a>
+							<span class="float-end"><a href="/list.php?tf=day">List offenders</a> | <a href="/download.php?tf=day">Download CSV</a></span>
 						</div>
 						<div class="card-body">
 							<canvas id="g_count_today" style="width:100%"></canvas>
@@ -202,41 +202,45 @@ ksort($count_yesterday);
 						<div class="card-header">
 							<b>Last 20 Detections</b>
 						</div>
-						<table class="card-body">
-							<tr>
-								<th>Date</th>
-								<th>Time</th>
-								<th>Speed</th>
-								<th>Direction</th>
-								<th>Image</th>
-								<th>Plate</th>
-							</tr>
-
-							<?php
-							$limit = 20;
-							while($row = $count_week_r->fetchArray()) {
-								$limit--;
-								$d = new DateTime('now', new DateTimeZone("America/New_York"));
-								$d->setTimestamp($row['ts']);
-							?>
-
-							<tr>
-								<td><?php echo $d->format('m/d/Y'); ?></td>
-								<td><?php echo $d->format('h:i A'); ?></td>
-								<td><?php echo floor($row['speed'] * 0.621372); ?> mph</td>
-								<td><?php echo $row['direction']; ?></td>
-								<td><?php echo empty($row['plate']) ? '-' : $row['plate']; ?></td>
-								<td><?php echo empty($row['image1']) ? '-' : $row['image1']; ?></td>
-							</tr>
-
-							<?php
-								if ($limit == 0) {
-									break;
-								}//if
-							}//while
-							?>
-
-						</table>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table">
+									<tr>
+										<th>Date</th>
+										<th>Time</th>
+										<th>Speed</th>
+										<th>Direction</th>
+										<th>Image</th>
+										<th>Plate</th>
+									</tr>
+		
+									<?php
+									$limit = 20;
+									while($row = $count_week_r->fetchArray()) {
+										$limit--;
+										$d = new DateTime('now', new DateTimeZone("America/New_York"));
+										$d->setTimestamp($row['ts']);
+									?>
+		
+									<tr>
+										<td><?php echo $d->format('m/d/Y'); ?></td>
+										<td><?php echo $d->format('h:i A'); ?></td>
+										<td><?php echo floor($row['speed'] * 0.621372); ?> mph</td>
+										<td><?php echo $row['direction']; ?></td>
+										<td><?php echo empty($row['plate']) ? '-' : $row['plate']; ?></td>
+										<td><?php echo empty($row['image1']) ? '-' : $row['image1']; ?></td>
+									</tr>
+		
+									<?php
+										if ($limit == 0) {
+											break;
+										}//if
+									}//while
+									?>
+		
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
