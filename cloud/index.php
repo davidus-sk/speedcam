@@ -31,7 +31,7 @@ if (!empty($week) && ($week != date('W'))) {
 }
 
 // get counts for this and last week
-$count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+$count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ? ORDER BY ts DESC', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
 $count_yesterweek_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtyw->getTimestamp(), $dtyw->getTimestamp()+604800]);
 
 // get data into arrays
@@ -114,11 +114,11 @@ ksort($count_yesterday);
 						<div class="card-body">
 							Week:
 							<?php
-							for ($i=date('W') - 15; $i<=date('W'); $i++) {
+							for ($i=date('W') - 20; $i<=date('W'); $i++) {
 								if ($i >= 1) {
 									echo '<a href="/?week=' . $i . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
-								}
-							}
+								}//if
+							}//for
 							?>
 						</div>
 					</div>
@@ -130,7 +130,7 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Speeding Detections by Hour</b> 
-							<a href="/download.php?tf=day" class="float-end">Download CSV</a>
+							<a href="/list.php?tf=day" class="float-end">List offenders</a> | <a href="/download.php?tf=day" class="float-end">Download CSV</a>
 						</div>
 						<div class="card-body">
 							<canvas id="g_count_today" style="width:100%"></canvas>
@@ -163,39 +163,84 @@ ksort($count_yesterday);
 				</div>
 			</div>
 
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <b>Speed Range Distribution</b>
-            </div>
-            <div class="card-body">
-		<canvas id="g_speed_range" style="width:100%"></canvas>
-            </div>
+			<div class="row mb-4">
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header">
+							<b>Speed Range Distribution</b>
+						</div>
+						<div class="card-body">
+							<canvas id="g_speed_range" style="width:100%"></canvas>
+						</div>
 						<div class="card-footer">
 							<span class="badge text-bg-primary" style="background-color:#00d700 !important">30-39 mph</span>,
 							<span class="badge text-bg-primary" style="background-color:#0000FF !important">40-49 mph</span>,
 							<span class="badge text-bg-primary" style="background-color:#f3c50f !important">50-59 mph</span>, and
 							<span class="badge text-bg-primary" style="background-color:#FF0000 !important">60+ mph</span>
 						</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <b>Average Speed by Day</b>
-            </div>
-            <div class="card-body">
-		<canvas id="g_speed_average" style="width:100%"></canvas>
-            </div>
-		  						<div class="card-footer">
-							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dtw->format('W'); ?></span>
+					</div>
+				</div>
 
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header">
+							<b>Average Speed by Day</b>
 						</div>
-          </div>  
-        </div>
-      </div>
-  </div>
+						<div class="card-body">
+							<canvas id="g_speed_average" style="width:100%"></canvas>
+						</div>
+						<div class="card-footer">
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dtw->format('W'); ?></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row mb-4">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<b>Last 20 Detections</b>
+						</div>
+						<table class="card-body">
+							<tr>
+								<th>Date</th>
+								<th>Time</th>
+								<th>Speed</th>
+								<th>Direction</th>
+								<th>Image</th>
+								<th>Plate</th>
+							</tr>
+
+							<?php
+							$limit = 20;
+							while($row = $count_week_r->fetchArray()) {
+								$limit--;
+								$d = new DateTime('now', new DateTimeZone("America/New_York"));
+								$d->setTimestamp($row['ts']);
+							?>
+
+							<tr>
+								<td><?php echo $d->format('m/d/Y'); ?></td>
+								<td><?php echo $d->format('h:i A'); ?></td>
+								<td><?php echo floor($row['speed'] * 0.621372); ?> mph</td>
+								<td><?php echo $row['direction']; ?></td>
+								<td><?php echo empty($row['plate']) ? '-' : $row['plate']; ?></td>
+								<td><?php echo empty($row['image1']) ? '-' : $row['image1']; ?></td>
+							</tr>
+
+							<?php
+								if ($limit == 0) {
+									break;
+								}//if
+							}//while
+							?>
+
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
