@@ -95,7 +95,7 @@ ksort($count_yesterday);
 	</head>
 	<body>
 		<div class="container">
-			<nav class="navbar bg-body-secondary mb-4 mt-4">
+			<nav class="navbar bg-body-secondary mb-4 mt-4 rounded">
 				<div class="container-fluid">
 					<span class="navbar-brand">Safe Homeowners Accessible Motorist Enforcement</span>
 					<div class="d-flex">
