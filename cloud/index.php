@@ -94,10 +94,13 @@ ksort($count_yesterday);
 	</head>
 	<body>
 		<div class="container">
-			<nav class="navbar bg-body-tertiary mb-4">
+			<nav class="navbar bg-body-tertiary mb-4 mt-4">
 				<div class="container-fluid">
-					<span class="navbar-brand mb-0 h1">Safe Homeowners Accessible Motorist Enforcement</span>
-					<div class="navbar-collapse" id="navbarText">
+					<span class="navbar-brand">Safe Homeowners Accessible Motorist Enforcement</span>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarText">
 						<span class="navbar-text">
 							<b>Week #<?php echo $dtw->format('W'); ?></b>
 						</span>
@@ -134,10 +137,10 @@ ksort($count_yesterday);
 
 			<div class="p-4 p-md-5 mb-4 mt-4 rounded text-body-emphasis bg-body-secondary">
 				<div class="row">
-					<div class="col-lg-9 px-0">
+					<div class="col-lg-6 px-0">
 						<h4>Deerwood, Jacksonville, Florida 32256</h4>
 					</div>
-					<div class="col-lg-3 px-0">
+					<div class="col-lg-6 px-0">
 						<p class="lead my-3">Detections: <a href=""><?php echo $count_total; ?></a> | Speed limit: <a href="">30 mph</a></p>
 					</div>
 				</div>
@@ -261,6 +264,10 @@ ksort($count_yesterday);
 						</div>
 					</div>
 				</div>
+			</div>
+
+			<div class="row mb-4 bg-body-tertiary">
+				<div class="col-md-12">Copyright &copy; 2024 LUCEON LLC | All rights reserved | Made in Florida with Love</div>
 			</div>
 		</div>
 
