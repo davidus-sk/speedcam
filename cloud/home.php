@@ -1,30 +1,5 @@
 <?php
 
-if (!empty($week) && ($week != date('W'))) {
-	$day_offset = ($week - 1) * 7;
-	$dayy_offset = ($week - 2) * 7;
-	
-	$dtw = new DateTime(date('Y-01-01 00:00:00'), new DateTimeZone("America/New_York"));
-	$dtyw = new DateTime(date('Y-01-01 00:00:00'), new DateTimeZone("America/New_York"));
-
-	$dtw->modify("+{$day_offset} days");
-	$dtyw->modify("+{$dayy_offset} days");
-
-	// get counts week
-	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dtw->getTimestamp(), $dtw->getTimestamp() + 604800]);
-	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE 1=0');
-} else {
-	$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
-	$dtyw = new DateTime('Monday previous week 00:00:00', new DateTimeZone("America/New_York"));
-
-	$dt = new DateTime('today 00:00:00', new DateTimeZone("America/New_York"));
-	$dty = new DateTime('yesterday 00:00:00', new DateTimeZone("America/New_York"));
-
-	// get counts today and yesterday
-	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dt->getTimestamp(), $dt->getTimestamp() + 86400]);
-	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dty->getTimestamp(), $dty->getTimestamp() + 86400]);
-}
-
 // get counts for this and last week
 $count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ? ORDER BY ts DESC', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
 $count_yesterweek_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtyw->getTimestamp(), $dtyw->getTimestamp()+604800]);
