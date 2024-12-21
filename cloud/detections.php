@@ -7,7 +7,7 @@ $week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ? AN
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<b>Last 20 Detections</b>
+							<b>Detections week #<?php echo $dtw->format('W'); ?></b>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
