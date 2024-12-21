@@ -132,11 +132,11 @@ ksort($count_yesterday);
 
 			<div class="mb-4 rounded bg-body-secondary">
 				<div class="row">
-					<div class="p-3 col-md-6">
-						<p class="my-3"><b>Deerwood, Jacksonville, Florida 32256</b></p>
+					<div class="col-md-6">
+						<p class="p-3 m-0"><b>Deerwood, Jacksonville, Florida 32256</b></p>
 					</div>
-					<div class="p-3 col-md-6">
-						<p class="my-3 text-end">Detections: <a href=""><?php echo $count_total; ?></a> | Speed limit: <a href="">30 mph</a></p>
+					<div class="col-md-6">
+						<p class="p-3 m-0 text-end">Detections: <a href=""><?php echo $count_total; ?></a> | Speed limit: <a href="">30 mph</a></p>
 					</div>
 				</div>
 			</div>
@@ -263,7 +263,7 @@ ksort($count_yesterday);
 
 			<div class="mb-4 rounded bg-body-tertiary">
 				<div class="row">
-					<div class="col-md-12"><p class="p-2">Copyright &copy; 2024 LUCEON LLC | All rights reserved | Made in Florida with Love</p></div>
+					<div class="col-md-12"><p class="p-2 m-0">Copyright &copy; 2024 LUCEON LLC | All rights reserved | Made in Florida with Love</p></div>
 				</div>
 			</div>
 		</div>
