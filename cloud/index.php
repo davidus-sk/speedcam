@@ -39,7 +39,7 @@ ob_start();
 if( file_exists($_route . '.php') )
 {
         // If all good, load the page
-        include '$_route . '.php';
+        include $_route . '.php';
 }
 else
 {
