@@ -3,7 +3,8 @@
 include 'DB.php';
 $db = new DB('speed_cloud.db');
 
-// get week number
+// get global vars
+$location = empty($_GET['l']) ? 1 : (int)$_GET['l'];
 $week = $_GET['week'];
 
 if (!empty($week) && ($week != date('W'))) {
@@ -122,7 +123,13 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-body">
 							<select name="location" id="location">
+								<option>Select a location</option>
 								<?php
+								$locations_r = $db->fetchResult('SELECT rowid, * FROM locations');
+
+								while ($row = $locations_r->fetchArray()) {
+									echo '<option value="' . $row['rowid'] . '">' . $row['name'] . '</option>';
+								}//while
 								?>
 							</select>
 						</div>
@@ -133,7 +140,12 @@ ksort($count_yesterday);
 			<div class="mb-4 rounded bg-body-secondary">
 				<div class="row">
 					<div class="col-md-6">
-						<p class="p-3 m-0"><b>Deerwood, Jacksonville, Florida 32256</b></p>
+						<p class="p-3 m-0"><b>
+							<?php
+							$r = $db->fetchRow('SELECT * FROM locations WHERE rowid = ' . $location);
+							echo $r['name'];
+							?>
+						</b></p>
 					</div>
 					<div class="col-md-6">
 						<p class="p-3 m-0 text-end">Detections: <a href=""><?php echo $count_total; ?></a> | Speed limit: <a href="">30 mph</a></p>
