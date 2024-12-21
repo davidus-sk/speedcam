@@ -122,7 +122,7 @@ ksort($count_yesterday);
 				<div class="col-md-6">
 					<div class="card">
 						<div class="card-body">
-							<select name="location" id="location">
+							<select name="location" id="location" style="display: block; width: 100%;">
 								<option>Select a location</option>
 								<?php
 								$locations_r = $db->fetchResult('SELECT rowid, * FROM locations');
@@ -147,8 +147,12 @@ ksort($count_yesterday);
 							?>
 						</b></p>
 					</div>
-					<div class="col-md-6">
-						<p class="p-3 m-0 text-end">Detections: <a href=""><?php echo $count_total; ?></a> | Speed limit: <a href="">30 mph</a></p>
+					<div class="col-md-2"></div>
+					<div class="col-md-2">
+						<p class="p-3 m-0 text-end">Detections: <a href=""><?php echo $count_total; ?></a></p>
+					</div>
+					<div class="col-md-2">
+						<p class="p-3 m-0 text-end">Speed limit: <a href=""><?php echo $r['speedlimit']; ?> mph</a></p>
 					</div>
 				</div>
 			</div>
