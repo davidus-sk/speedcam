@@ -94,10 +94,10 @@ ksort($count_yesterday);
 	</head>
 	<body>
 		<div class="container">
-			<nav class="navbar bg-body-tertiary">
+			<nav class="navbar bg-body-tertiary mb-4">
 				<div class="container-fluid">
 					<span class="navbar-brand mb-0 h1">Safe Homeowners Accessible Motorist Enforcement</span>
-					<div class="collapse navbar-collapse" id="navbarText">
+					<div class="navbar-collapse" id="navbarText">
 						<span class="navbar-text">
 							<b>Week #<?php echo $dtw->format('W'); ?></b>
 						</span>
@@ -111,7 +111,7 @@ ksort($count_yesterday);
 						<div class="card-body">
 							Week:
 							<?php
-							for ($i=date('W') - 10; $i<=date('W'); $i++) {
+							for ($i=date('W') - 13; $i<=date('W'); $i++) {
 								if ($i >= 1) {
 									echo '<a href="/?week=' . $i . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
 								}//if
@@ -138,9 +138,7 @@ ksort($count_yesterday);
 						<h4>Deerwood, Jacksonville, Florida 32256</h4>
 					</div>
 					<div class="col-lg-3 px-0">
-						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
-						<p class="lead my-3">Top speed: <?php echo floor($top_speed * 0.621372); ?> mph</p>
-						<p class="lead my-3">Speed limit: 30 mph</p>
+						<p class="lead my-3">Detections: <a href=""><?php echo $count_total; ?></a> | Speed limit: <a href="">30 mph</a></p>
 					</div>
 				</div>
 			</div>
