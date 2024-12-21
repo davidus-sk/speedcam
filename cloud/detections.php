@@ -7,7 +7,8 @@ $week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ? AN
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<b>Detections week #<?php echo $dtw->format('W'); ?></b>
+							<b>Detections Week #<?php echo $dtw->format('W'); ?></b>
+							<a href="/download.php?tf=week" class="float-end">Download CSV</a>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
