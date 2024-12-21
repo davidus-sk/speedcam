@@ -1,4 +1,5 @@
 <?php
+// import libs
 include 'DB.php';
 $db = new DB('speed_cloud.db');
 
@@ -93,34 +94,53 @@ ksort($count_yesterday);
 	</head>
 	<body>
 		<div class="container">
-			<div class="p-4 p-md-5 mb-4 mt-4 rounded text-body-emphasis bg-body-secondary">
-				<div class="row">
-					<div class="col-lg-9 px-0">
-						<h2 class="display-3"><b>S</b>afe <b>H</b>omeowners <b>A</b>ccessible <b>M</b>otorist <b>E</b>nforcement</h2>
-						<h4>Deerwood, Jacksonville, Florida 32256</h4>
-					</div>
-					<div class="col-lg-3 px-0">
-						<p class="lead my-3"><b>Week #<?php echo $dtw->format('W'); ?></b></p>
-						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
-						<p class="lead my-3">Top speed: <?php echo floor($top_speed * 0.621372); ?> mph</p>
-						<p class="lead my-3">Speed limit: 30 mph</p>
+			<nav class="navbar bg-body-tertiary">
+				<div class="container-fluid">
+					<span class="navbar-brand mb-0 h1">Safe Homeowners Accessible Motorist Enforcement</span>
+					<div class="collapse navbar-collapse" id="navbarText">
+						<span class="navbar-text">
+							<b>Week #<?php echo $dtw->format('W'); ?></b>
+						</span>
 					</div>
 				</div>
-			</div>
+			</nav>
 
 			<div class="row mb-4">
-				<div class="col-md-12">
+				<div class="col-md-6">
 					<div class="card">
 						<div class="card-body">
 							Week:
 							<?php
-							for ($i=date('W') - 20; $i<=date('W'); $i++) {
+							for ($i=date('W') - 10; $i<=date('W'); $i++) {
 								if ($i >= 1) {
 									echo '<a href="/?week=' . $i . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
 								}//if
 							}//for
 							?>
 						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-body">
+							<select name="location" id="location">
+								<?php
+								?>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="p-4 p-md-5 mb-4 mt-4 rounded text-body-emphasis bg-body-secondary">
+				<div class="row">
+					<div class="col-lg-9 px-0">
+						<h4>Deerwood, Jacksonville, Florida 32256</h4>
+					</div>
+					<div class="col-lg-3 px-0">
+						<p class="lead my-3">Detections: <?php echo $count_total; ?></p>
+						<p class="lead my-3">Top speed: <?php echo floor($top_speed * 0.621372); ?> mph</p>
+						<p class="lead my-3">Speed limit: 30 mph</p>
 					</div>
 				</div>
 			</div>
