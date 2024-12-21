@@ -84,7 +84,7 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Speeding Detections by Hour</b> 
-							<span class="float-end"><a href="/list.php?tf=day">List offenders</a> | <a href="/download.php?tf=day">Download CSV</a></span>
+							<span class="float-end"><a href="/?r=detections">List offenders</a> | <a href="/download.php?tf=day">Download CSV</a></span>
 						</div>
 						<div class="card-body">
 							<canvas id="g_count_today" style="width:100%"></canvas>
