@@ -198,3 +198,133 @@ ksort($count_yesterday);
 					</div>
 				</div>
 			</div>
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+  	<script>
+  	const count_today_x = <?php echo json_encode(array_keys($count_today)); ?>;
+  	const count_today_y = <?php echo json_encode(array_values($count_today)); ?>;
+  	const count_yesterday_y = <?php echo json_encode(array_values($count_yesterday)); ?>;
+
+  	const count_week_x = <?php echo json_encode(array_keys($count_week)); ?>;
+  	const count_week_y = <?php echo json_encode(array_values($count_week)); ?>;
+  	const count_yesterweek_y = <?php echo json_encode(array_values($count_yesterweek)); ?>;
+	const average_week_y = <?php echo json_encode(array_values($average_week)); ?>;
+  
+    new Chart("g_count_today", {
+      type: "bar",
+      data: {
+        labels: count_today_x,
+        datasets: [{
+          data: count_today_y,
+          backgroundColor: "#2196F3"
+        },
+    	      {
+          data: count_yesterday_y,
+          backgroundColor: "#8acbff"
+        }]
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: false,
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false // Disables grid lines on the x-axis
+            }
+          }],
+        }
+      }
+    });
+
+    new Chart("g_count_week", {
+      type: "bar",
+      data: {
+        labels: count_week_x,
+        datasets: [{
+          data: count_week_y,
+          backgroundColor: "#2196F3"
+        },
+    	      {
+          data: count_yesterweek_y,
+          backgroundColor: "#8acbff"
+        }]
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: false,
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false // Disables grid lines on the x-axis
+            }
+          }],
+        }
+      }
+    });
+
+	new Chart("g_speed_range", {
+		type: "pie",
+		data: {
+			labels: <?php echo json_encode(array_keys($speed_buckets)); ?>,
+			datasets: [{
+			data: <?php echo json_encode(array_values($speed_buckets)); ?>,
+			backgroundColor: [
+				'#00d700', '#0000FF', '#f3c50f', '#FF0000'
+			],
+			}]
+		},
+		options: {
+			legend: {display: false},
+			title: {display: false},
+			scales: { },
+    plugins: {
+      datalabels: {
+        display: true,
+        formatter: (val, ctx) => {
+          // Grab the label for this value
+          const label = ctx.chart.data.labels[ctx.dataIndex];
+
+          // Format the number with 2 decimal places
+          const formattedVal = Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+          }).format(val);
+
+          // Put them together
+          return `${label}: ${formattedVal}`;
+        },
+        color: '#fff',
+        backgroundColor: '#404040',
+      },
+    },
+		}
+	});
+
+    new Chart("g_speed_average", {
+      type: "bar",
+      data: {
+        labels: count_week_x,
+        datasets: [{
+          data: average_week_y,
+          backgroundColor: "#2196F3"
+        }]
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: false,
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false // Disables grid lines on the x-axis
+            }
+          }],
+        }
+      }
+    });
+	</script>
