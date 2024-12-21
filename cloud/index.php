@@ -33,6 +33,9 @@ if (!empty($week) && ($week != date('W'))) {
 	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dty->getTimestamp(), $dty->getTimestamp() + 86400]);
 }
 
+$count_total_r = $db->fetchRow('SELECT COUNT(*) as CNT FROM detections WHERE ts >= ? AND ts < ? ORDER BY ts DESC', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+$count_total = $count_total_r['CNT'];
+
 // start output buffer
 ob_start();
 
