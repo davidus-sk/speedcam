@@ -73,6 +73,8 @@ $_content = ob_get_clean();
 				</div>
 			</nav>
 
+			<?php if (!in_array($_route, ['settings'])) { ?>
+
 			<div class="row mb-4">
 				<div class="col-md-6">
 					<div class="card">
@@ -125,6 +127,8 @@ $_content = ob_get_clean();
 					</div>
 				</div>
 			</div>
+
+			<?php }//if ?>
 
 			<?php echo $_content; ?>
 
