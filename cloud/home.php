@@ -110,7 +110,7 @@ ksort($count_yesterday);
 					</div>
 				</div>
 
-				<div class="col-md-6">
+				<div class="col-md-6 mt-4 mt-md-0">
 					<div class="card">
 						<div class="card-header">
 							<b>Average Speed by Day</b>
