@@ -4,6 +4,8 @@ $locations_r = $db->fetchResult('SELECT rowid,* FROM locations');
 while ($row = $locations_r->fetchArray()) {
 ?>
 
+<form method="post" action="">
+
 <div class="row mb-4">
 	<div class="col-md-12">
 		<div class="card">
@@ -34,6 +36,8 @@ while ($row = $locations_r->fetchArray()) {
 		</div>
 	</div>
 </div>
+
+</form>
 
 <?php
 }//while
