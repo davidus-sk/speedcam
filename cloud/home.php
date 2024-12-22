@@ -59,14 +59,14 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Speeding Detections by Hour</b> 
-							<span class="float-end"><a href="/?r=detections&l=<?php echo $location; ?>">List offenders</a> | <a href="/download.php?tf=day">Download CSV</a></span>
+							<span class="float-end"><a href="/download.php?tf=day">Download CSV</a></span>
 						</div>
 						<div class="card-body">
 							<canvas id="g_count_today" style="width:100%"></canvas>
 						</div>
 						<div class="card-footer">
 							<?php if (empty($week) || $week == date('W')) { ?>
-							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->format('l'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->format('l'); ?></span>
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important"><?php echo $dt->format('l'); ?></span> <span class="badge text-bg-primary" style="background-color:#8acbff !important"><?php echo $dty->format('l'); ?></span>
 							<?php } else { ?>
 							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dtw->format('W'); ?></span>
 							<?php } ?>
@@ -86,7 +86,7 @@ ksort($count_yesterday);
 							<canvas id="g_count_week" style="width:100%"></canvas>
 						</div>
 						<div class="card-footer">
-							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dtw->format('W'); ?></span> and <span class="badge text-bg-primary" style="background-color:#8acbff !important">Week <?php echo $dtyw->format('W'); ?></span>
+							<span class="badge text-bg-primary" style="background-color:#2196F3 !important">Week <?php echo $dtw->format('W'); ?></span> <span class="badge text-bg-primary" style="background-color:#8acbff !important">Week <?php echo $dtyw->format('W'); ?></span>
 						</div>
 					</div>
 				</div>
@@ -102,9 +102,9 @@ ksort($count_yesterday);
 							<canvas id="g_speed_range" style="width:100%"></canvas>
 						</div>
 						<div class="card-footer">
-							<span class="badge text-bg-primary" style="background-color:#00d700 !important">30-39 mph</span>,
-							<span class="badge text-bg-primary" style="background-color:#0000FF !important">40-49 mph</span>,
-							<span class="badge text-bg-primary" style="background-color:#f3c50f !important">50-59 mph</span>, and
+							<span class="badge text-bg-primary" style="background-color:#00d700 !important">30-39 mph</span>
+							<span class="badge text-bg-primary" style="background-color:#0000FF !important">40-49 mph</span>
+							<span class="badge text-bg-primary" style="background-color:#f3c50f !important">50-59 mph</span>
 							<span class="badge text-bg-primary" style="background-color:#FF0000 !important">60+ mph</span>
 						</div>
 					</div>
@@ -130,6 +130,7 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Last 20 Detections</b>
+							<span class="float-end"><a href="/?r=detections&l=<?php echo $location; ?>">List offenders</a></span>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
