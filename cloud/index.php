@@ -66,7 +66,7 @@ $_content = ob_get_clean();
 		<div class="container">
 			<nav class="navbar bg-body-secondary mb-4 mt-4 rounded">
 				<div class="container-fluid">
-					<span class="navbar-brand">Safe Homeowners Accessible Motorist Enforcement</span>
+					<a href="/" class="navbar-brand">Safe Homeowners Accessible Motorist Enforcement</a>
 					<div class="d-flex">
 						<b>Week #<?php echo $dtw->format('W'); ?></b>
 					</div>
@@ -120,7 +120,7 @@ $_content = ob_get_clean();
 					</div>
 					<div class="col-md-2"></div>
 					<div class="col-md-2">
-						<p class="p-3 m-0 text-end">Detections: <a href=""><?php echo $count_total; ?></a></p>
+						<p class="p-3 m-0 text-end">Detections: <a href="/?r=detections&l=<?php echo $location; ?>"><?php echo $count_total; ?></a></p>
 					</div>
 					<div class="col-md-2">
 						<p class="p-3 m-0 text-end">Speed limit: <a href="/?r=settings"><?php echo $r['speedlimit']; ?> mph</a></p>
