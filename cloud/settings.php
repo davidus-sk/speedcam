@@ -1,6 +1,16 @@
 <?php
+
+// if we have post, save data
+if (isset($_POST['speedlimit'])) {
+	foreach ($_POST['speedlimit'] as $k=>$v) {
+		$db->query('UPDATE locations SET speedlimit = ? WHERE rowid = ?', [$v, $k]);
+	}//foreach
+}//if
+
+// get settings
 $locations_r = $db->fetchResult('SELECT rowid,* FROM locations');
 
+// show editing forms
 while ($row = $locations_r->fetchArray()) {
 ?>
 
