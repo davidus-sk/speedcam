@@ -90,7 +90,7 @@ $_content = ob_get_clean();
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-6 mt-3 mt-md-0">
 					<div class="card">
 						<div class="card-body">
 							<select name="location" id="location" style="display: block; width: 100%;">
