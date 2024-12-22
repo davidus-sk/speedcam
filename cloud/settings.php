@@ -16,7 +16,10 @@ while ($row = $locations_r->fetchArray()) {
 						Speed limit:
 					</div>
 					<div class="col-md-6">
-						<input type="text" name="speedlimit[<?php echo $row['rowid']; ?>]" value="<?php echo $row['speedlimit']; ?>" />
+						<div class="input-group">
+							<input type="text" class="form-control" name="speedlimit[<?php echo $row['rowid']; ?>]" value="<?php echo $row['speedlimit']; ?>" />
+							<span class="input-group-text" id="basic-addon2">mph</span>
+						</div>
 					</div>
 				</div>
 			</div>
