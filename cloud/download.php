@@ -19,7 +19,7 @@ switch ($tf) {
   // week
   case 'week': {
     $dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
-    $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+    $result = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
   } break;
 
   // error
