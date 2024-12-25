@@ -53,7 +53,7 @@ for v in config:
 		direction = v
 
 # connecto to sqlite and create DB if it does not exist
-con = sqlite3.connect("/dev/shm/speed.db")
+con = sqlite3.connect("/data/speed.db")
 cur = con.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS detections (time TEXT, month INTEGER, day INTEGER, hour INTEGER, direction, camera INTEGER, radar, speed REAL, processed INTEGER DEFAULT 0, uploaded INTEGER DEFAULT 0)")
 con.commit()
@@ -67,7 +67,7 @@ con.commit()
 con.close()
 
 # create detection directory
-directory = f"/dev/shm/{camera}_{ts}"
+directory = f"/data/{camera}_{ts}"
 if not os.path.exists(directory):
 	os.mkdir(directory)
 

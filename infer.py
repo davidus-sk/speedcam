@@ -28,7 +28,7 @@ syslog.openlog(logoption=syslog.LOG_PID)
 model = get_model(model_id="license-plate-recognition-rxg4e/4", api_key="BCAzwxkM57CDYeVdQXr3")
 
 # load DB connection
-con = sqlite3.connect("/dev/shm/speed.db")
+con = sqlite3.connect("/data/speed.db")
 cur = con.cursor()
 
 while True:
@@ -42,7 +42,7 @@ while True:
 		print(f"Processing item {ts} on camera {camera}.")
 
 		# create detection
-		directory = f"/dev/shm/{camera}_{ts}"
+		directory = f"/data/{camera}_{ts}"
 
 		# find images
 		best_image = None
@@ -50,9 +50,9 @@ while True:
 		best_box = ()
 		found_plate = False
 		results = []
-		files = glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*")
+		files = glob.glob(f"/data/ffmpeg/{camera}_{ts}*")
 
-		print(f"Found {len(files)} images to process for {ts} on camera {camera} in /dev/shm/ffmpeg/{camera}_{ts}*")
+		print(f"Found {len(files)} images to process for {ts} on camera {camera} in /data/ffmpeg/{camera}_{ts}*")
 
 		result = subprocess.run(['/usr/bin/pgrep', '-f', f'"[f]fmpeg/{camera}_{ts}_"'], capture_output=True, text=True)
 		print(result)
@@ -60,7 +60,7 @@ while True:
 			print(f"Still acquiring images. Quitting...")
 			sys.exit()
 
-		for name in glob.glob(f"/dev/shm/ffmpeg/{camera}_{ts}*"):
+		for name in glob.glob(f"/data/ffmpeg/{camera}_{ts}*"):
 			if not found_plate or results["predictions"]:
 				try:
 					results = json.loads(model.infer(name)[0].json())

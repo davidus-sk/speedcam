@@ -13,13 +13,13 @@ if (file_exists($config_file)) {
 $image_left = ['ts'=>0, 'name'=>null];
 $image_right = ['ts'=>0, 'name'=>null];
 
-foreach (glob("/dev/shm/frames/0_*.jpg") as $filename) {
+foreach (glob("/data/frames/0_*.jpg") as $filename) {
 	if ($image_left['ts'] < filemtime($filename)) {
 		$image_left = ['ts'=>filemtime($filename), 'name'=>basename($filename)];
 	}//if
 }//foreach
 
-foreach (glob("/dev/shm/frames/1_*.jpg") as $filename) {
+foreach (glob("/data/frames/1_*.jpg") as $filename) {
 	if ($image_right['ts'] < filemtime($filename)) {
 		$image_right = ['ts'=>filemtime($filename), 'name'=>basename($filename)];
 	}//if
@@ -40,7 +40,7 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 }//if
 
 // get SQL data
-$db = new SQLite3('/dev/shm/speed.db', SQLITE3_OPEN_READONLY);
+$db = new SQLite3('/data/speed.db', SQLITE3_OPEN_READONLY);
 $cam0_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
 $cam0_results_cnt_y = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n', time() - 86400) . ' AND day=' . date('j', time() - 86400) . ' GROUP BY hour');
 $cam1_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
@@ -231,7 +231,7 @@ $db->close();
 				</div>
 				<div class="w3-col m6">
 					<p>
-					Free shmem: <?php echo trim(`/usr/bin/df | /usr/bin/awk '/([0-9]+)% \/dev\/shm/{print $5; exit}'`);?>
+					Free shmem: <?php echo trim(`/usr/bin/df | /usr/bin/awk '/([0-9]+)% \/data/{print $5; exit}'`);?>
 					<span class="w3-text-light-blue">|</span>
 					Utilization: <?php echo trim(`/usr/bin/uptime | /usr/bin/awk '{print $11}' | /usr/bin/sed 's/,$//'`);?>
 					<span class="w3-text-light-blue">|</span>

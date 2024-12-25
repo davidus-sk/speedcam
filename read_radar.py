@@ -43,7 +43,7 @@ radar = sys.argv[2]
 camera = None
 direction = None
 ts_detection = time.time()
-ffmpeg_dir = "/dev/shm/ffmpeg"
+ffmpeg_dir = "/data/ffmpeg"
 
 # create needed directories
 if not os.path.exists(ffmpeg_dir):
@@ -166,7 +166,7 @@ while True:
 
 			if speed_towards >= 96:
 				# start frame capture
-				os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -i {camera_url} -q:v 16 -r 1000 -vsync 0 -f image2 -frame_pts 1 -frames:v 100 /dev/shm/ffmpeg/{camera}_{ts_detection_str}_%09d.jpg > /dev/null 2>&1 &")
+				os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -i {camera_url} -q:v 16 -r 1000 -vsync 0 -f image2 -frame_pts 1 -frames:v 100 /data/ffmpeg/{camera}_{ts_detection_str}_%09d.jpg > /dev/null 2>&1 &")
 
 			# create new detection
 			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection_str} > /dev/null 2>&1 &")
@@ -182,7 +182,7 @@ while True:
 			f.write(f"{tme_str} ({tme}) :: Camera {camera} :: Radar {radar} :: Direction {direction}")
 
 		# record current speed
-		with open(f"/dev/shm/{radar}.speed", 'w') as f:
+		with open(f"/data/{radar}.speed", 'w') as f:
 			f.write(str(speed_towards))
 
 	# rest

@@ -1,4 +1,4 @@
-/dev/shm/*.top {
+/data/*.top {
 	daily
 	rotate 7
 	missingok

@@ -81,7 +81,7 @@ with open(config_file) as f:
 	config = json.load(f)
 
 # create dir
-directory = "/dev/shm/frames/"
+directory = "/data/frames/"
 
 if not os.path.isdir(directory):
 	os.makedirs(directory)

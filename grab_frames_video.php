@@ -39,7 +39,7 @@ if (file_exists($conf_file) && filesize($conf_file) > 0) {
 }//if
 
 // create needed dirs
-$output_dir = "/dev/shm/ffmpeg/";
+$output_dir = "/data/ffmpeg/";
 
 if (!is_dir($output_dir)) {
 	mkdir($output_dir);
