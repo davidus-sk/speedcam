@@ -9,6 +9,11 @@
 
 int main(int argc, char *argv[])
 {
+	if(wiringPiSetup() == -1)
+	{
+		return 0;
+	}//if
+
 	pinMode(Relay_Ch3,OUTPUT);
 	digitalWrite(Relay_Ch3, HIGH);
 

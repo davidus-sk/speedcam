@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
 	digitalWrite(Relay_Ch3, LOW);
 	sleep(delay_on);
 	digitalWrite(Relay_Ch3, HIGH);
+	sleep(1);
+	digitalWrite(Relay_Ch3, HIGH);
 
 	remove(pathname);
 
