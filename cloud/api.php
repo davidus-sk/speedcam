@@ -43,7 +43,7 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) 
 
   if ($insertId) {
     $r = $db->fetchRow('SELECT * FROM locations WHERE rowid = ' . $location);
-    echo json_encode(['status' => 'OK', 'rowid' => $insertId, 'speedlimit' => $r['speedlimit'], 'flashers' => $r['flashers']]);
+    echo json_encode(['status' => 'OK', 'rowid' => $insertId, 'speedlimit' => $r['speedlimit'], 'flashers' => (bool)$r['flashers']]);
   } else {
     echo json_encode(['status' => 'ERROR', 'msg' => 'NO ROW ID']);
   }//if

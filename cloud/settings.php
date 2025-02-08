@@ -3,14 +3,14 @@
 // if we have post, save data
 if (isset($_POST['speedlimit'])) {
 	foreach ($_POST['speedlimit'] as $k=>$v) {
-		$db->query('UPDATE locations SET speedlimit = ? WHERE rowid = ?', [$v, $k]);
+		$db->query('UPDATE locations SET speedlimit = ? WHERE rowid = ?', [round($v * 1.60934, 2), $k]);
 	}//foreach
 }//if
 
 // if we have post, save data
 if (isset($_POST['flashers'])) {
 	foreach ($_POST['flashers'] as $k=>$v) {
-		$db->query('UPDATE locations SET flashers = ? WHERE rowid = ?', [$v, (int)$k]);
+		$db->query('UPDATE locations SET flashers = ? WHERE rowid = ?', [(int)$v, $k]);
 	}//foreach
 }//if
 
@@ -48,8 +48,8 @@ while ($row = $locations_r->fetchArray()) {
 					<div class="col-md-6">
 						<div class="input-group">
 							<select name="flashers[<?php echo $row['rowid']; ?>]" style="display: block; width: 100%;">
-								<option value="1">ON</option>
-								<option value="0">OFF</option>
+								<option value="1" <?php echo $row['flashers'] == '1' ? 'selected' : ''; ?>>ON</option>
+								<option value="0" <?php echo $row['flashers'] == '0' ? 'selected' : ''; ?>>OFF</option>
 							</select>
 						</div>
 					</div>

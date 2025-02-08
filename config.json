@@ -19,6 +19,7 @@
 		"api": {
 			"post_url":"http://deerwood.luceon.us/api.php"
 		},
-		"location":1
+		"location":1,
+		"flashers":true
 	}
 }

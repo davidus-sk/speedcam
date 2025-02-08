@@ -18,6 +18,7 @@ import json
 import os
 import fcntl
 import datetime
+import hashlib
 from pathlib import Path
 
 # only run once
@@ -44,6 +45,7 @@ camera = None
 direction = None
 ts_detection = time.time()
 ffmpeg_dir = "/data/ffmpeg"
+config_hash = ""
 
 # create needed directories
 if not os.path.exists(ffmpeg_dir):
@@ -62,6 +64,8 @@ if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
 
 with open(config_file) as f:
 	config = json.load(f)
+	data = f.read()
+	config_hash = hashlib.md5(data).hexdigest()
 
 # find this radar in config
 for v in config:
@@ -172,7 +176,8 @@ while True:
 			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection_str} > /dev/null 2>&1 &")
 
 			# flashers
-			os.system("/app/speed/flashers 8 > /dev/null 2>&1 &")
+			if config["flashers"]:
+				os.system("/app/speed/flashers 8 > /dev/null 2>&1 &")
 
 		# debug
 		with open(f"/tmp/{camera}.osd", 'w') as f:
@@ -181,9 +186,15 @@ while True:
 			tme_str = dt.isoformat()
 			f.write(f"{tme_str} ({tme}) :: Camera {camera} :: Radar {radar} :: Direction {direction}")
 
-		# record current speed
-		with open(f"/data/{radar}.speed", 'w') as f:
-			f.write(str(speed_towards))
+	# check if config changed
+	with open(config_file) as f:
+		data = f.read()
+		config_hash_new = hashlib.md5(data).hexdigest()
+
+		if config_hash_new != config_hash:
+			syslog.syslog(syslog.LOG_INFO, f"Config file {config_file} has changed. Updating...")
+			config = json.load(f)
+			config_hash = config_hash_new
 
 	# rest
 	time.sleep(0.02)

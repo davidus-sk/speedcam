@@ -19,6 +19,7 @@ import requests
 import re
 import sqlite3
 import datetime
+import shutil
 
 # need to have input
 if len(sys.argv) < 4:
@@ -34,6 +35,7 @@ ts = float(sys.argv[3])
 camera = None
 direction = None
 dt = datetime.datetime.fromtimestamp(ts)
+total, used, free = shutil.disk_usage("/data")
 
 # read config
 config_file = "/app/speed/config.json"
@@ -77,15 +79,24 @@ if not os.path.exists(directory):
 	('plate', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
 """
 
-data = {"ts":ts, "radar":radar, "speed":speed, "direction":direction, "location":config["settings"]["location"], "camera":camera}
+data = {"ts":ts, "radar":radar, "speed":speed, "direction":direction, "location":config["settings"]["location"], "camera":camera, "storage":int((free/total)*100)}
 
 syslog.syslog(syslog.LOG_INFO, f'Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.')
 
 for x in [1,2,3,4,5]:
 	response = requests.post(config["settings"]["api"]["post_url"], data=data)
-	response_data = response.content.decode('UTF-8')
-	syslog.syslog(syslog.LOG_DEBUG, f'Response from URL: {response_data}.')
+	response_json = response.content.decode('UTF-8')
+	syslog.syslog(syslog.LOG_DEBUG, f'Response from URL: {response_json}.')
 	response.close()
 
-	if re.match(r"OK: [0-9]+", response_data):
+	response_data = json.loads(response_json)
+
+	if response_data["status"] == "OK":
+		# update config
+		config["flashers"] = response_data["flashers"]
+		config[direction]["speed_limit"] = response_data["speedlimit"]
+
+		with open(config_file, 'w') as f:
+			json.dump(config, f, indent=4)
+
 		break
