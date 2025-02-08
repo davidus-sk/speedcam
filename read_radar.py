@@ -168,9 +168,8 @@ while True:
 			# log event
 			syslog.syslog(syslog.LOG_INFO, f"Overspeed {speed_towards} km/h detected on radar {radar}.")
 
-			if speed_towards >= 96:
-				# start frame capture
-				os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -i {camera_url} -q:v 16 -r 1000 -vsync 0 -f image2 -frame_pts 1 -frames:v 100 /data/ffmpeg/{camera}_{ts_detection_str}_%09d.jpg > /dev/null 2>&1 &")
+			# start frame capture
+			os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -t 4 -i {camera_url} /data/ffmpeg/{camera}_{ts_detection_str}.mp4 > /dev/null 2>&1 &")
 
 			# create new detection
 			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection_str} > /dev/null 2>&1 &")
