@@ -36,7 +36,7 @@ while ($row = $locations_r->fetchArray()) {
 					</div>
 					<div class="col-md-6">
 						<div class="input-group">
-							<input type="number" class="form-control" name="speedlimit[<?php echo $row['rowid']; ?>]" value="<?php echo $row['speedlimit']; ?>" />
+							<input type="number" class="form-control" name="speedlimit[<?php echo $row['rowid']; ?>]" value="<?php echo (int)($row['speedlimit']*0.621371); ?>" />
 							<span class="input-group-text" id="basic-addon2">mph</span>
 						</div>
 					</div>
