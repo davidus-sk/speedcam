@@ -3,7 +3,22 @@
 include 'DB.php';
 $db = new DB('speed_cloud.db');
 
-// get posted data
+// check if GET request
+// if get, retrieve latest settings and exit
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+	$location = empty($_GET['location']) ? null : $_GET['location'];
+	
+	if (!is_null($location)) {
+		$r = $db->fetchRow('SELECT * FROM locations WHERE rowid = ' . $location);
+		echo json_encode(['status' => 'OK', 'speedlimit' => $r['speedlimit'], 'flashers' => (bool)$r['flashers']]);
+		exit();
+	}//if
+
+	echo json_encode(['status' => 'ERROR', 'msg' => 'MISSING DATA', 'method' => $_SERVER['REQUEST_METHOD']]);
+	exit();
+}//if
+
+// get POST data and process
 $camera = !isset($_POST['camera']) ? null : (int)$_POST['camera'];
 $speed = empty($_POST['speed']) ? null : (float)$_POST['speed'];
 $ts = empty($_POST['ts']) ? null : $_POST['ts'];
@@ -20,7 +35,7 @@ if (!is_null($storage)) {
 }//if
 
 // save data
-if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) {
+if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar) && !is_null($location)) {
   // date time
   $dt = new DateTime();
   $dt->setTimezone(new DateTimeZone("America/New_York"));
@@ -33,7 +48,7 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) 
   $row = $db->fetchRow('SELECT * FROM detections WHERE camera = ? AND location = ? AND ts = ?', [$camera, $location, $ts]);
 
   if ($row != false) {
-    echo json_encode(['status' => 'ERROR', 'msg' => 'EXISTS']);
+    echo json_encode(['status' => 'ERROR', 'msg' => 'EXISTS', 'method' => $_SERVER['REQUEST_METHOD']]);
     exit();
   }//if
   
@@ -45,10 +60,10 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar)) 
     $r = $db->fetchRow('SELECT * FROM locations WHERE rowid = ' . $location);
     echo json_encode(['status' => 'OK', 'rowid' => $insertId, 'speedlimit' => $r['speedlimit'], 'flashers' => (bool)$r['flashers']]);
   } else {
-    echo json_encode(['status' => 'ERROR', 'msg' => 'NO ROW ID']);
+    echo json_encode(['status' => 'ERROR', 'msg' => 'NO ROW ID', 'method' => $_SERVER['REQUEST_METHOD']]);
   }//if
 
   exit();
 }//if
 
-echo json_encode(['status' => 'ERROR', 'msg' => 'MISSING DATA']);
+echo json_encode(['status' => 'ERROR', 'msg' => 'MISSING DATA', 'method' => $_SERVER['REQUEST_METHOD']]);
