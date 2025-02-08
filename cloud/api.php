@@ -12,7 +12,7 @@ $direction = empty($_POST['direction']) ? null : $_POST['direction'];
 $location = empty($_POST['location']) ? null : $_POST['location'];
 $plate = empty($_FILES['plate']) ? null : $_FILES['plate'];
 $car = empty($_FILES['car']) ? null : $_FILES['car'];
-$storage = empty($_FILES['storage']) ? null : $_FILES['storage'];
+$storage = empty($_POST['storage']) ? null : $_POST['storage'];
 
 // save location data
 if (!is_null($storage)) {

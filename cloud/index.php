@@ -119,13 +119,13 @@ $_content = ob_get_clean();
 						</b></p>
 					</div>
 					<div class="col-md-2">
-						<p class="p-3 m-0 text-end">Storage: <?php echo $r['storage']; ?> GB free</p>
+						<p class="p-3 m-0 text-end">Storage: <?php echo $r['storage']; ?> % free</p>
 					</div>
 					<div class="col-md-2">
 						<p class="p-3 m-0 text-end">Detections: <a href="/?r=detections&l=<?php echo $location; ?>"><?php echo $count_total; ?></a></p>
 					</div>
 					<div class="col-md-2">
-						<p class="p-3 m-0 text-end">Speed limit: <a href="/?r=settings"><?php echo $r['speedlimit']; ?> mph</a></p>
+						<p class="p-3 m-0 text-end">Speed limit: <a href="/?r=settings"><?php echo round($r['speedlimit'] * 0.621371); ?> mph</a></p>
 					</div>
 				</div>
 			</div>
