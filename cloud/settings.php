@@ -47,7 +47,7 @@ while ($row = $locations_r->fetchArray()) {
 					</div>
 					<div class="col-md-6">
 						<div class="input-group">
-							<select name="flashers[<?php echo $row['rowid']; ?>]" style="display: block; width: 100%;">
+							<select name="flashers[<?php echo $row['rowid']; ?>]" class="form-control" style="display: block; width: 100%;">
 								<option value="1" <?php echo $row['flashers'] == '1' ? 'selected' : ''; ?>>ON</option>
 								<option value="0" <?php echo $row['flashers'] == '0' ? 'selected' : ''; ?>>OFF</option>
 							</select>
