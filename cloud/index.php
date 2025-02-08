@@ -85,7 +85,7 @@ $_content = ob_get_clean();
 								if ($i >= 1) {
 									echo '<a href="/?week=' . $i . '&year=' . date('Y') . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
 								} else {
-									echo '<a href="">' . (52 + $i) . '</a>';
+									echo '<a href="/?week=' . (52 + $i) . '&year=' . (date('Y') - 1) . '" class="badge ' . ((52 + $i)==$week ? ' text-bg-primary ' : ((52 + $i)==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . (52 + $i) . '</a> ';
 								}//if
 							}//for
 							?>
