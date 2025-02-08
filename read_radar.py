@@ -176,7 +176,7 @@ while True:
 			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection_str} > /dev/null 2>&1 &")
 
 			# flashers
-			if config["flashers"]:
+			if config["settings"]["flashers"]:
 				os.system("/app/speed/flashers 8 > /dev/null 2>&1 &")
 
 		# debug

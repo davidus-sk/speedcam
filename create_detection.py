@@ -93,7 +93,7 @@ for x in [1,2,3,4,5]:
 
 	if response_data["status"] == "OK":
 		# update config
-		config["flashers"] = response_data["flashers"]
+		config["settings"]["flashers"] = response_data["flashers"]
 		config[direction]["speed_limit"] = response_data["speedlimit"]
 
 		with open(config_file, 'w') as f:
