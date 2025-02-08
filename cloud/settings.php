@@ -30,7 +30,7 @@ while ($row = $locations_r->fetchArray()) {
 				<b><?php echo $row['name']; ?></b>
 			</div>
 			<div class="card-body">
-				<div class="row">
+				<div class="row mb-4">
 					<div class="col-md-6">
 						Speed limit:
 					</div>
