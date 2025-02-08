@@ -193,7 +193,7 @@ while True:
 
 		if config_hash_new != config_hash:
 			syslog.syslog(syslog.LOG_INFO, f"Config file {config_file} has changed. Updating...")
-			config = json.load(f)
+			config = json.loads(data)
 			config_hash = config_hash_new
 
 	# rest
