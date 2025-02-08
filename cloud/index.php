@@ -118,7 +118,9 @@ $_content = ob_get_clean();
 							?>
 						</b></p>
 					</div>
-					<div class="col-md-2"></div>
+					<div class="col-md-2">
+						<p class="p-3 m-0 text-end">Storage: <?php echo $r['storage']; ?> GB free</p>
+					</div>
 					<div class="col-md-2">
 						<p class="p-3 m-0 text-end">Detections: <a href="/?r=detections&l=<?php echo $location; ?>"><?php echo $count_total; ?></a></p>
 					</div>

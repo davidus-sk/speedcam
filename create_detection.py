@@ -81,7 +81,7 @@ data = {"ts":ts, "radar":radar, "speed":speed, "direction":direction, "location"
 
 syslog.syslog(syslog.LOG_INFO, f'Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.')
 
-for x in [1,2,3]:
+for x in [1,2,3,4,5]:
 	response = requests.post(config["settings"]["api"]["post_url"], data=data)
 	response_data = response.content.decode('UTF-8')
 	syslog.syslog(syslog.LOG_DEBUG, f'Response from URL: {response_data}.')
