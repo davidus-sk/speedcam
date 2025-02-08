@@ -6,14 +6,15 @@ $db = new DB('speed_cloud.db');
 // get global vars
 $location = empty($_GET['l']) ? 1 : (int)$_GET['l'];
 $week = $_GET['week'];
+$year = $_GET['year'];
 $_route = !empty($_GET['r']) ? trim($_GET['r']) : 'home';
 
 if (!empty($week) && ($week != date('W'))) {
 	$day_offset = ($week - 1) * 7;
 	$dayy_offset = ($week - 2) * 7;
 	
-	$dtw = new DateTime(date('Y-01-01 00:00:00'), new DateTimeZone("America/New_York"));
-	$dtyw = new DateTime(date('Y-01-01 00:00:00'), new DateTimeZone("America/New_York"));
+	$dtw = new DateTime(date($year . '-01-01 00:00:00'), new DateTimeZone("America/New_York"));
+	$dtyw = new DateTime(date($year . '-01-01 00:00:00'), new DateTimeZone("America/New_York"));
 
 	$dtw->modify("+{$day_offset} days");
 	$dtyw->modify("+{$dayy_offset} days");
@@ -68,7 +69,7 @@ $_content = ob_get_clean();
 				<div class="container-fluid">
 					<a href="/" class="navbar-brand">Safe Homeowners Accessible Motorist Enforcement</a>
 					<div class="d-flex">
-						<b>Week #<?php echo $dtw->format('W'); ?></b>
+						<b>Week #<?php echo $dtw->format('W Y'); ?></b>
 					</div>
 				</div>
 			</nav>
