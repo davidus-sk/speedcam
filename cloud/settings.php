@@ -3,7 +3,7 @@
 // if we have post, save data
 if (isset($_POST['speedlimit'])) {
 	foreach ($_POST['speedlimit'] as $k=>$v) {
-		$db->query('UPDATE locations SET speedlimit = ? WHERE rowid = ?', [round($v * 1.60934, 2), $k]);
+		$db->query('UPDATE locations SET speedlimit = ? WHERE rowid = ?', [round($v * 1.60934, 4), $k]);
 	}//foreach
 }//if
 
@@ -36,7 +36,7 @@ while ($row = $locations_r->fetchArray()) {
 					</div>
 					<div class="col-md-6">
 						<div class="input-group">
-							<input type="number" class="form-control" name="speedlimit[<?php echo $row['rowid']; ?>]" value="<?php echo (int)($row['speedlimit']*0.621371); ?>" />
+							<input type="number" class="form-control" name="speedlimit[<?php echo $row['rowid']; ?>]" value="<?php echo round($row['speedlimit']*0.621371); ?>" />
 							<span class="input-group-text" id="basic-addon2">mph</span>
 						</div>
 					</div>
