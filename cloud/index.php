@@ -83,7 +83,9 @@ $_content = ob_get_clean();
 							<?php
 							for ($i=date('W') - 13; $i<=date('W'); $i++) {
 								if ($i >= 1) {
-									echo '<a href="/?week=' . $i . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
+									echo '<a href="/?week=' . $i . '&year=' . date('Y') . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
+								} else {
+									echo '<a href="">' . (52 + $i) . '</a>';
 								}//if
 							}//for
 							?>
@@ -119,7 +121,7 @@ $_content = ob_get_clean();
 						</b></p>
 					</div>
 					<div class="col-md-2">
-						<p class="p-3 m-0 text-end">Storage: <?php echo $r['storage']; ?> % free</p>
+						<p class="p-3 m-0 text-end">Storage: <?php echo $r['storage']; ?>% free</p>
 					</div>
 					<div class="col-md-2">
 						<p class="p-3 m-0 text-end">Detections: <a href="/?r=detections&l=<?php echo $location; ?>"><?php echo $count_total; ?></a></p>
