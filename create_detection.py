@@ -68,11 +68,6 @@ cur.execute(f'INSERT INTO detections VALUES ("{ts}", {dt.month}, {dt.day}, {dt.h
 con.commit()
 con.close()
 
-# create detection directory
-directory = f"/data/{camera}_{ts}"
-if not os.path.exists(directory):
-	os.mkdir(directory)
-
 # post detection to server
 """
 	('car', ('custom_file_name.zip', open('myfile.zip', 'rb'))),

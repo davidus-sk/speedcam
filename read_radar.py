@@ -44,12 +44,7 @@ radar = sys.argv[2]
 camera = None
 direction = None
 ts_detection = time.time()
-ffmpeg_dir = "/data/ffmpeg"
 config_hash = ""
-
-# create needed directories
-if not os.path.exists(ffmpeg_dir):
-	os.makedirs(ffmpeg_dir)
 
 # start syslog
 syslog.openlog(logoption=syslog.LOG_PID)
