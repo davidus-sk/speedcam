@@ -2,6 +2,8 @@
 * *	* * *	root	/app/speed/grab_frames.py left
 * *	* * *	root	/app/speed/grab_frames.py right
 */2 *	* * *	root	/app/speed/edge/sync_settings.py
+* *	* * *	root	/app/speed/edge/vms/vms_database.php
+* *	* * *	root	/app/speed/edge/vms/vms_record.php
 #* *	* * *	root	/app/speed/infer.py
 #* *	* * *	root	/app/speed/grab_frames_video.php left
 #* *	* * *	root	/app/speed/grab_frames_video.php right
