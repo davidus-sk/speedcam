@@ -110,8 +110,6 @@ ksort($cam1_day_cnt_y);
 ksort($cam0_day_speed);
 ksort($cam1_day_speed);
 
-$db->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -435,3 +433,9 @@ new Chart("speed_1_graph", {
 
 	</body>
 </html>
+
+<?php
+// destroy DB connections
+$db->close();
+$db_vms->close();
+?>
