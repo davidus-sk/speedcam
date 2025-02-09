@@ -41,7 +41,7 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 
 // get SQL data
 $db = new SQLite3('/data/speed.db', SQLITE3_OPEN_READONLY);
-$db_vms = new SQLite3('/app/speed/edge/vms/vms_videos.db', SQLITE3_OPEN_READONLY);
+$db_vms = new SQLite3('/data/vms_videos.db', SQLITE3_OPEN_READONLY);
 
 $cam0_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
 $cam0_results_cnt_y = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n', time() - 86400) . ' AND day=' . date('j', time() - 86400) . ' GROUP BY hour');

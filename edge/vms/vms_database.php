@@ -3,9 +3,9 @@
 
 // import libs
 include dirname(__FILE__) . '/../../cloud/DB.php';
-$db = new DB(dirname(__FILE__) . '/vms_videos.db');
+$db = new DB('/data/vms_videos.db');
 
-$db->query("CREATE TABLE IF NOT EXISTS videos (ts_from INTEGER, ts_to INTEGER, filename TEXT)");
+$db->query("CREATE TABLE IF NOT EXISTS videos (ts_from INTEGER, ts_to INTEGER, filename TEXT, camera INTEGER)");
 
 foreach (glob("/data/vms/*.mp4") as $path) {
 	// check if file exists
@@ -25,13 +25,13 @@ foreach (glob("/data/vms/*.mp4") as $path) {
 			$duration = (float)trim(`/usr/bin/ffprobe -i {$path} -show_entries format=duration -v quiet -of csv="p=0"`);
 
 			// save
-			$db->query('INSERT INTO videos VALUES (?, ?, ?)', [$ts, $ts + round($duration), $filename]);
+			$db->query('INSERT INTO videos VALUES (?, ?, ?, ?)', [$ts, $ts + round($duration), $filename, $camera]);
 
 			echo "Inserting new video into DB: file={$filename}, from={$ts}, duration={$duration}\n";
 		}//if
 	} else {
 		// too old - delete the file
-		if ($row['ts_from'] < (time() - 172800)) {
+		if ($row['ts_from'] < (time() - 86400)) {
 			unlink($path);
 			$db->query("DELETE FROM videos WHERE filename = ?", [$filename]);
 

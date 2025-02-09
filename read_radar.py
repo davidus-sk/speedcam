@@ -35,9 +35,6 @@ except IOError:
 if len(sys.argv) < 3:
 	sys.exit()
 
-# make sure flashers are off
-os.system("/app/speed/flashers_off > /dev/null 2>&1 &")
-
 # global variables
 tty = sys.argv[1]
 radar = sys.argv[2]
@@ -45,12 +42,16 @@ camera = None
 direction = None
 ts_detection = time.time()
 config_hash = ""
+script_dir = os.path.dirname(os.path.realpath(__file__))
 
 # start syslog
 syslog.openlog(logoption=syslog.LOG_PID)
 
+# make sure flashers are off
+os.system(f"{script_dir}/flashers_off > /dev/null 2>&1 &")
+
 # read config
-config_file = "/app/speed/config.json"
+config_file = f"{script_dir}/config.json"
 config = {}
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) <= 0:
@@ -167,11 +168,11 @@ while True:
 			#os.system(f"/usr/bin/ffmpeg -hide_banner -rtsp_transport tcp -probesize 1000 -fflags nobuffer -fflags discardcorrupt -flags low_delay -r 15 -copyts -t 4 -i {camera_url} /data/ffmpeg/{camera}_{ts_detection_str}.mp4 > /dev/null 2>&1 &")
 
 			# create new detection
-			os.system(f"/app/speed/create_detection.py {radar} {speed_towards} {ts_detection_str} > /dev/null 2>&1 &")
+			os.system(f"{script_dir}/create_detection.py {radar} {speed_towards} {ts_detection_str} > /dev/null 2>&1 &")
 
 			# flashers
 			if config["settings"]["flashers"]:
-				os.system("/app/speed/flashers 8 > /dev/null 2>&1 &")
+				os.system(f"{script_dir}/flashers 8 > /dev/null 2>&1 &")
 
 		# debug
 		with open(f"/tmp/{camera}.osd", 'w') as f:
