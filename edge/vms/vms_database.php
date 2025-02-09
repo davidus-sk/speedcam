@@ -18,15 +18,15 @@ foreach (glob("/data/vms/*.mp4") as $path) {
 			$camera = $m[1];
 			$date = "{$m[2]}-{$m[3]}-{$m[4]}";
 			$time = "{$m[5]}:{$m[6]}:{$m[7]}";
-			
+
 			$dt = new DateTime("{$date} {$time}", new DateTimeZone("America/New_York"));
 			$ts = $dt->getTimestamp();
-			
+
 			$duration = (float)trim(`/usr/bin/ffprobe -i {$path} -show_entries format=duration -v quiet -of csv="p=0"`);
-			
+
 			// save
-			$db->query('INSERT INTO videos (ts_from, ts_to, filename) VALUES (?, ?, ?)', [$ts, $ts + round($duration)], $filename);
-			
+			$db->query('INSERT INTO videos VALUES (?, ?, ?)', [$ts, $ts + round($duration), $filename]);
+
 			echo "Inserting new video into DB: file={$filename}, from={$ts}, duration={$duration}\n";
 		}//if
 	} else {
