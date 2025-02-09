@@ -22,10 +22,10 @@ foreach (glob("/data/vms/*.mp4") as $path) {
 			$dt = new DateTime("{$date} {$time}", new DateTimeZone("America/New_York"));
 			$ts = $dt->getTimestamp();
 			
-			$duration = trim(`/usr/bin/ffprobe -i {$path} -show_entries format=duration -v quiet -of csv="p=0"`);
+			$duration = (float)trim(`/usr/bin/ffprobe -i {$path} -show_entries format=duration -v quiet -of csv="p=0"`);
 			
 			// save
-			$db->query('INSERT INTO videos (ts_from, ts_to, filename) VALUES (?, ?, ?)', [$ts, $ts + $duration], $filename);
+			$db->query('INSERT INTO videos (ts_from, ts_to, filename) VALUES (?, ?, ?)', [$ts, $ts + round($duration)], $filename);
 			
 			echo "Inserting new video into DB: file={$filename}, from={$ts}, duration={$duration}\n";
 		}//if
