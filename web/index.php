@@ -230,7 +230,7 @@ ksort($cam1_day_speed);
 					<h3>Last 10 detections</h3>
 				</header>
 				<div class="w3-container">
-					<table>
+					<table class="w3-table w3-striped w3-bordered">
 						<tr>
 							<th>Time</th>
 							<th>Speed</th>
@@ -264,7 +264,7 @@ ksort($cam1_day_speed);
 					<h3>Last 10 detections</h3>
 				</header>
 				<div class="w3-container">
-					<table>
+					<table class="w3-table w3-striped w3-bordered">
 						<tr>
 							<th>Time</th>
 							<th>Speed</th>
@@ -287,6 +287,7 @@ ksort($cam1_day_speed);
 						<?php
 						}//while
 						?>
+					</table>
 				</div>
 			</div>
 		</div>
