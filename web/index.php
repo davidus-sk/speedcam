@@ -1,6 +1,6 @@
 <?php
 // load up system config
-$config_file = "/app/speed/config.json";
+$config_file = dirname(__FILE__) . "/../config.json";
 $conf = [];
 
 if (file_exists($config_file)) {
@@ -41,6 +41,8 @@ if (preg_match("@/Modem/([0-9]+)@", $modem_id, $m)) {
 
 // get SQL data
 $db = new SQLite3('/data/speed.db', SQLITE3_OPEN_READONLY);
+$db_vms = new SQLite3('/app/speed/edge/vms/vms_videos.db', SQLITE3_OPEN_READONLY);
+
 $cam0_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
 $cam0_results_cnt_y = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=0 AND month=' . date('n', time() - 86400) . ' AND day=' . date('j', time() - 86400) . ' GROUP BY hour');
 $cam1_results_cnt = $db->query('SELECT hour, count(time) as cnt FROM detections WHERE camera=1 AND month=' . date('n') . ' AND day=' . date('j') . ' GROUP BY hour');
@@ -223,11 +225,80 @@ $db->close();
 		</div>
 	</div>
 
+	<div class="w3-row-padding w3-margin-bottom">
+		<div class="w3-col m6">
+			<div class="w3-card">
+				<header class="w3-container">
+					<h3>Last 10 detections</h3>
+				</header>
+				<div class="w3-container">
+					<table>
+						<tr>
+							<th>Time</th>
+							<th>Speed</th>
+							<th>Video</th>
+						</tr>
+						
+						<?php
+						$r = $db->query('SELECT * FROM detections WHERE camera = 0 ORDER BY ts DESC LIMIT 10');
+						while ($row = $r->fetchArray()) {
+							$r_vms = $db_vms->query('SELECT * FROM videos WHERE ts_from <= ' . $row['ts'] . ' AND ts_to >= ' . $row['ts']);
+							$video = $r_vms->fetchArray();
+						?>
+
+						<tr>
+							<td><?php echo date('Y-m-d H:i:s', $row['ts']); ?></td>
+							<td><?php echo $row['speed']; ?> km/h</td>
+							<td><a href="/vms/<?php echo $video['filename']; ?>">play</a></td>
+						</tr>
+
+						<?php
+						}//while
+						?>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="w3-col m6">
+			<div class="w3-card">
+				<header class="w3-container">
+					<h3>Last 10 detections</h3>
+				</header>
+				<div class="w3-container">
+					<table>
+						<tr>
+							<th>Time</th>
+							<th>Speed</th>
+							<th>Video</th>
+						</tr>
+						
+						<?php
+						$r = $db->query('SELECT * FROM detections WHERE camera = 1 ORDER BY ts DESC LIMIT 10');
+						while ($row = $r->fetchArray()) {
+							$r_vms = $db_vms->query('SELECT * FROM videos WHERE ts_from <= ' . $row['ts'] . ' AND ts_to >= ' . $row['ts']);
+							$video = $r_vms->fetchArray();
+						?>
+
+						<tr>
+							<td><?php echo date('Y-m-d H:i:s', $row['ts']); ?></td>
+							<td><?php echo $row['speed']; ?> km/h</td>
+							<td><a href="/vms/<?php echo $video['filename']; ?>">play</a></td>
+						</tr>
+
+						<?php
+						}//while
+						?>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="w3-row-padding">
 		<div class="w3-col">
 			<div class="w3-row-padding w3-blue">
 				<div class="w3-col m6">
-					<p>Copyright &copy; 2024 <b>LUCEON LLC</b>. All rights reserved.</p>
+					<p>Copyright &copy; <?php echo date('Y'); ?> <b>LUCEON LLC</b>. All rights reserved.</p>
 				</div>
 				<div class="w3-col m6">
 					<p>
