@@ -11,7 +11,7 @@ $year = (int)$_GET['year'];
 // headers
 header('Content-Description: File Transfer');
 header('Content-Type: text/csv');
-header('Content-Disposition: attachment; filename=speed-report-' . $tf . '-' . $date("Ymd_His") . '.csv'); 
+header('Content-Disposition: attachment; filename=speed-report-' . $tf . '-' . date("Ymd_His") . '.csv'); 
 
 
 // decide what to do
