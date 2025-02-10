@@ -240,7 +240,7 @@ ksort($cam1_day_speed);
 						<?php
 						$r = $db->query('SELECT * FROM detections WHERE camera = 0 ORDER BY time DESC LIMIT 10');
 						while ($row = $r->fetchArray()) {
-							$r_vms = $db_vms->query('SELECT * FROM videos WHERE ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
+							$r_vms = $db_vms->query('SELECT * FROM videos WHERE camera = 0 AND ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
 							$video = $r_vms->fetchArray();
 						?>
 
@@ -274,7 +274,7 @@ ksort($cam1_day_speed);
 						<?php
 						$r = $db->query('SELECT * FROM detections WHERE camera = 1 ORDER BY time DESC LIMIT 10');
 						while ($row = $r->fetchArray()) {
-							$r_vms = $db_vms->query('SELECT * FROM videos WHERE ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
+							$r_vms = $db_vms->query('SELECT * FROM videos WHERE camera = 1 AND ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
 							$video = $r_vms->fetchArray();
 						?>
 
