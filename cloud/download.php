@@ -63,14 +63,22 @@ switch ($tf) {
 
   // all
   case 'all': {
+    if (empty($week) || empty($year)) {
+      $dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
+    } else {
+      $dtw = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
+    }
+
+    $result = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+
     // spit out data
+    echo "Report for " . $dtw->format('Y') . " week #" . $dtw->format('W') . "\r\n";
     echo "Year,Month,Day,Time,Speed,Direction\r\n";
 
     while($row = $result->fetchArray()) {
       $speed = round($row['speed'] * 0.621372);
-      $d = new DateTime('now', new DateTimeZone("America/New_York"));
-      $d->setTimestamp($row['ts']);
-      $time = $d->format("H:i:s");
+      $dtw->setTimestamp($row['ts']);
+      $time = $dtw->format("H:i:s");
 
       echo "{$row['year']},{$row['month']},{$row['day']},{$time},{$speed},{$row['direction']}\r\n";
     }//while
