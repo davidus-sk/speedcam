@@ -24,7 +24,7 @@ switch ($tf) {
 
       echo "Report for " . $dtw->format('Y-m-d') . "\r\n";
     } else {
-      $dt = new DateTime('Monday ' . $year . 'W' . $week . ' 00:00:00', new DateTimeZone("America/New_York"));
+      $dt = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
       $result = $db->fetchResult('SELECT hour, COUNT(rowid) AS cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dt->getTimestamp(), $dt->getTimestamp()+604800]);
 
       echo "Report for " . $dtw->format('Y') . " week #" . $dtw->format('W') . "\r\n";
@@ -42,7 +42,7 @@ switch ($tf) {
     if (empty($week) || empty($year)) {
       $dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
     } else {
-      $dtw = new DateTime('Monday ' . $year . 'W' . $week . ' 00:00:00', new DateTimeZone("America/New_York"));
+      $dtw = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
     }
 
     $result = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
