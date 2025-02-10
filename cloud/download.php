@@ -22,12 +22,12 @@ switch ($tf) {
       $dt = new DateTime('now', new DateTimeZone("America/New_York"));
       $result = $db->fetchResult('SELECT hour, COUNT(rowid) AS cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
 
-      echo "Report for " . $dtw->format('Y-m-d') . "\r\n";
+      echo "Report for " . $dt->format('Y-m-d') . "\r\n";
     } else {
       $dt = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
       $result = $db->fetchResult('SELECT hour, COUNT(rowid) AS cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dt->getTimestamp(), $dt->getTimestamp()+604800]);
 
-      echo "Report for " . $dtw->format('Y') . " week #" . $dtw->format('W') . "\r\n";
+      echo "Report for " . $dt->format('Y') . " week #" . $dt->format('W') . "\r\n";
     }//if
 
     echo "Hour,Count\r\n";
