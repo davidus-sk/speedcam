@@ -59,7 +59,7 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Speeding Detections by Hour</b> 
-							<span class="float-end"><a href="/download.php?tf=day">Download CSV</a></span>
+							<span class="float-end"><a href="/download.php?tf=hour&week=<?php echo $week; ?>&year=<?php echo $year; ?>">Download CSV (<?php echo empty($week) ? 'Today' : 'Week'; ?>)</a></span>
 						</div>
 						<div class="card-body">
 							<canvas id="g_count_today" style="width:100%"></canvas>
@@ -80,7 +80,7 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Speeding Detections by Day</b>
-							<a href="/download.php?tf=week" class="float-end">Download CSV</a>
+							<a href="/download.php?tf=day&week=<?php echo $week; ?>&year=<?php echo $year; ?>" class="float-end">Download CSV (Week)</a>
 						</div>
 						<div class="card-body">
 							<canvas id="g_count_week" style="width:100%"></canvas>
