@@ -2,7 +2,7 @@
 <?php
 
 // import libs
-include dirname(__FILE__) . '/../../cloud/DB.php';
+include dirname(__FILE__) . '/../DB.php';
 $db = new DB('/data/vms_videos.db');
 
 $db->query("CREATE TABLE IF NOT EXISTS videos (ts_from INTEGER, ts_to INTEGER, filename TEXT, camera INTEGER)");

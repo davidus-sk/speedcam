@@ -3,22 +3,22 @@
 // if we have post, save data
 if (isset($_POST['speedlimit'])) {
 	foreach ($_POST['speedlimit'] as $k=>$v) {
-		$db->query('UPDATE locations SET speedlimit = ? WHERE rowid = ?', [round($v * 1.60934, 4), $k]);
+		$db->query('UPDATE locations SET speed_limit = ' . round($v * 1.60934, 4) . ' WHERE location_id = ' . (int)$k);
 	}//foreach
 }//if
 
 // if we have post, save data
 if (isset($_POST['flashers'])) {
 	foreach ($_POST['flashers'] as $k=>$v) {
-		$db->query('UPDATE locations SET flashers = ? WHERE rowid = ?', [(int)$v, $k]);
+		$db->query('UPDATE locations SET flashers = ' . (int)$v . ' WHERE location_id = ' . (int)$k);
 	}//foreach
 }//if
 
 // get settings
-$locations_r = $db->fetchResult('SELECT rowid,* FROM locations');
+$locations = $db->fetchAllAssoc($db->query('SELECT * FROM locations'));
 
 // show editing forms
-while ($row = $locations_r->fetchArray()) {
+foreach ($locations as $row) {
 ?>
 
 <form method="post" action="">
@@ -36,7 +36,7 @@ while ($row = $locations_r->fetchArray()) {
 					</div>
 					<div class="col-md-6">
 						<div class="input-group">
-							<input type="number" class="form-control" name="speedlimit[<?php echo $row['rowid']; ?>]" value="<?php echo round($row['speedlimit']*0.621371); ?>" />
+							<input type="number" class="form-control" name="speedlimit[<?php echo $row['location_id']; ?>]" value="<?php echo round($row['speed_limit']*0.621371); ?>" />
 							<span class="input-group-text" id="basic-addon2">mph</span>
 						</div>
 					</div>
@@ -47,7 +47,7 @@ while ($row = $locations_r->fetchArray()) {
 					</div>
 					<div class="col-md-6">
 						<div class="input-group">
-							<select name="flashers[<?php echo $row['rowid']; ?>]" class="form-control" style="display: block; width: 100%;">
+							<select name="flashers[<?php echo $row['location_id']; ?>]" class="form-control" style="display: block; width: 100%;">
 								<option value="1" <?php echo $row['flashers'] == '1' ? 'selected' : ''; ?>>ON</option>
 								<option value="0" <?php echo $row['flashers'] == '0' ? 'selected' : ''; ?>>OFF</option>
 							</select>

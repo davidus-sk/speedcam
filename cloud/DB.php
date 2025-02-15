@@ -1,97 +1,94 @@
 <?php
-/**
- * PHP class for sqlite3 database queries
- *
- * @author davidus.sk
- */
+
 class DB {
-	// connection object
-	private $conn = null;
+    private $mysqli;
+    private $host;
+    private $username;
+    private $password;
+    private $database;
+    private $port;
+    private $socket;
 
-	/**
-	 * Create object
-	 */
-	public function __construct($databaseFile) {
-		$this->conn = new SQLite3($databaseFile);
+    public function __construct($host, $username, $password, $database, $port = null, $socket = null) {
+        $this->host = $host;
+        $this->username = $username;
+        $this->password = $password;
+        $this->database = $database;
+        $this->port = $port;
+        $this->socket = $socket;
 
-		if (!$this->conn) {
-			die('Could not open database: ' . $this->conn->lastErrorMsg());
-		}//if
-	}//function
- 
-	/**
-	 * Destroy the class
-	 */
-	public function __destruct() {
-		$this->conn->close();
-	}//function
+        $this->connect();
+    }
 
-	/**
-	 * Prepare and execute query
-	 *
-	 * @param $sql
-	 * @param $params
-	 * @return object
-	 */
-	public function query($sql, $params = []) {
-		$stmt = $this->conn->prepare($sql);
+    private function connect() {
+        try {
+            if ($this->port !== null && $this->socket !== null) {
+                $this->mysqli = new mysqli($this->host, $this->username, $this->password, $this->database, $this->port, $this->socket);
+            } elseif ($this->port !== null) {
+                $this->mysqli = new mysqli($this->host, $this->username, $this->password, $this->database, $this->port);
+            } elseif ($this->socket !== null) {
+                $this->mysqli = new mysqli($this->host, $this->username, $this->password, $this->database, null, $this->socket);
+            } else {
+                $this->mysqli = new mysqli($this->host, $this->username, $this->password, $this->database);
+            }
 
-		if (!$stmt) {
-			die('Prepare failed: ' . $this->conn->lastErrorMsg());
-		}//if
+            if ($this->mysqli->connect_error) {
+                throw new Exception("MySQLi Connection Error: " . $this->mysqli->connect_error);
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            die("Database connection failed. Please check your configuration.");
+        }
+    }
 
-		foreach ($params as $key => $value) {
-			$stmt->bindValue($key + 1, $value);
-		}//foreach
+    public function query($sql) {
+        try {
+            $result = $this->mysqli->query($sql);
 
-		$result = $stmt->execute();
+            if ($this->mysqli->error) {
+                throw new Exception("MySQLi Query Error: " . $this->mysqli->error . " SQL: " . $sql);
+            }
 
-		if (!$result) {
-			die('Execute failed: ' . $this->conn->lastErrorMsg());
-		}//if
+            return $result;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
 
-		return $result;
-	}//function
+    public function fetchAssoc($result) {
+        if ($result) {
+            return $result->fetch_assoc();
+        }
+        return null;
+    }
 
-	/**
-	 * Fetch result from a query
-	 *
-	 * @param $sql
-	 * @param $params
-	 * @return object
-	 */
-	public function fetchResult($sql, $params = []) {
-		return $this->query($sql, $params);
-	}//function
+    public function fetchAllAssoc($result) {
+        if ($result) {
+            return $result->fetch_all(MYSQLI_ASSOC);
+        }
+        return [];
+    }
 
-	/**
-	 * Fetch row from a query
-	 *
-	 * @param $sql
-	 * @param $params
-	 * @return array
-	 */
-	public function fetchRow($sql, $params = []) {
-		$result = $this->query($sql, $params);
-		return $result->fetchArray();
-	}//function
+    public function escapeString($string) {
+        return $this->mysqli->real_escape_string($string);
+    }
 
-	/**
-	 * Get last insert ID
-	 *
-	 * @return int
-	 */
-	public function lastInsertId() {
-		return $this->conn->lastInsertRowID();
-	}//function
+    public function insertId() {
+        return $this->mysqli->insert_id;
+    }
 
-	/**
-	 * Create needed schemas
-	 *
-	 * @return void
-	 */
-	public function createSchemas() {
-		// create table detections
-		$this->conn->exec('CREATE TABLE IF NOT EXISTS detections (ts TEXT, month INTEGER, day INTEGER, hour INTEGER, year INTEGER, camera INTEGER, radar TEXT, speed REAL, direction TEXT, location TEXT, plate TEXT, image1 TEXT, image2 TEXT)');
-	}//function
-}//class
+    public function affectedRows() {
+        return $this->mysqli->affected_rows;
+    }
+
+    public function close() {
+        if ($this->mysqli) {
+            $this->mysqli->close();
+        }
+    }
+
+    public function __destruct() {
+        $this->close();
+    }
+}

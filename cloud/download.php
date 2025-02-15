@@ -1,7 +1,17 @@
 <?php
+// read config
+$conf_file = 'config.json';
+
+if (file_exists($conf_file)) {
+        $json = file_get_contents($conf_file);
+
+        if ($conf = json_decode($json, TRUE)) {
+        }//if
+}//if
+
 // include DB
 include 'DB.php';
-$db = new DB('speed_cloud.db');
+$db = new DB($conf['host'], $conf['username'], $conf['password'], $conf['database']);
 
 // get params
 $tf = $_GET['tf'];
@@ -20,19 +30,19 @@ switch ($tf) {
   case 'hour': {
     if (empty($week) || empty($year)) {
       $dt = new DateTime('now', new DateTimeZone("America/New_York"));
-      $result = $db->fetchResult('SELECT hour, COUNT(rowid) AS cnt FROM detections WHERE month=? AND day=? AND year=? GROUP BY hour', [$dt->format('n'), $dt->format('j'), $dt->format('Y')]);
+      $result = $db->fetchAllAssoc($db->query('SELECT hour, COUNT(detection_id) AS cnt FROM detections WHERE month = ' . (int)$dt->format('n') . ' AND day = ' . (int)$dt->format('j') . ' AND year = ' . (int)$dt->format('Y') . ' GROUP BY hour'));
 
       echo "Report for " . $dt->format('Y-m-d') . "\r\n";
     } else {
       $dt = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
-      $result = $db->fetchResult('SELECT hour, COUNT(rowid) AS cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dt->getTimestamp(), $dt->getTimestamp()+604800]);
+      $result = $db->fetchAllAssoc($db->query('SELECT hour, COUNT(detection_id) AS cnt FROM detections WHERE ts >= ' . $dt->getTimestamp() . ' AND ts < ' . ($dt->getTimestamp()+604800) . ' GROUP BY hour'));
 
       echo "Report for " . $dt->format('Y') . " week #" . $dt->format('W') . "\r\n";
     }//if
 
     echo "Hour,Count\r\n";
 
-    while ($row = $result->fetchArray()) {
+    foreach ($result as $row) {
       echo "{$row['hour']},{$row['cnt']}\r\n";
     }//while
   } break;
@@ -45,13 +55,13 @@ switch ($tf) {
       $dtw = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
     }
 
-    $result = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+    $result = $db->fetchAllAssoc($db->query('SELECT * FROM detections WHERE ts >= ' . $dtw->getTimestamp() . ' AND ts < ' . ($dtw->getTimestamp()+604800])));
 
     echo "Report for " . $dtw->format('Y') . " week #" . $dtw->format('W') . "\r\n";
     echo "Day,Count\r\n";
     $data = [];
 
-    while ($row = $result->fetchArray()) {
+    foreach ($result as $row) {
       $dtw->setTimestamp($row['ts']);
       $data[$dtw->format('l')] = empty($data[$dtw->format('l')]) ? 1 : $data[$dtw->format('l')] + 1;
     }//while
@@ -69,13 +79,13 @@ switch ($tf) {
       $dtw = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
     }
 
-    $result = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+    $result = $db->fetchAllAssoc($db->query('SELECT * FROM detections WHERE ts >= ' . $dtw->getTimestamp() . ' AND ts < ' . ($dtw->getTimestamp()+604800)));
 
     // spit out data
     echo "Report for " . $dtw->format('Y') . " week #" . $dtw->format('W') . "\r\n";
     echo "Year,Month,Day,Time,Speed,Direction\r\n";
 
-    while($row = $result->fetchArray()) {
+    while($result as $row) {
       $speed = round($row['speed'] * 0.621372);
       $dtw->setTimestamp($row['ts']);
       $time = $dtw->format("H:i:s");

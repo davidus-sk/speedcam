@@ -1,8 +1,8 @@
 <?php
 
 // get counts for this and last week
-$count_week_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ? ORDER BY ts DESC', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
-$count_yesterweek_r = $db->fetchResult('SELECT * FROM detections WHERE ts >= ? AND ts < ?', [$dtyw->getTimestamp(), $dtyw->getTimestamp()+604800]);
+$count_week_r = $db->fetchAllAssoc($db->query('SELECT * FROM detections WHERE ts >= ' . $dtw->getTimestamp() . ' AND ts < ' . ($dtw->getTimestamp()+604800) . ' ORDER BY ts DESC'));
+$count_yesterweek_r = $db->fetchAllAssoc($db->query('SELECT * FROM detections WHERE ts >= ' . $dtyw->getTimestamp() . ' AND ts < ' .($dtyw->getTimestamp()+604800)));
 
 // get data into arrays
 $top_speed = 0;
@@ -15,15 +15,15 @@ $count_yesterweek = ['Monday' => 0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday'
 $average_week_i = ['Monday' => [0,0], 'Tuesday' => [0,0], 'Wednesday' => [0,0], 'Thursday' => [0,0], 'Friday' => [0,0], 'Saturday' => [0,0], 'Sunday' => [0,0]];
 $average_week = ['Monday' => 0, 'Tuesday' => 0, 'Wednesday' => 0, 'Thursday' => 0, 'Friday' => 0, 'Saturday' => 0, 'Sunday' => 0];
 
-while ($row = $count_today_r->fetchArray()) {
+foreach ($count_today_r as $row) {
 	$count_today[$row['hour']] = $row['cnt'];
-}//while
+}//foreach
 
-while ($row = $count_yesterday_r->fetchArray()) {
+foreach ($count_yesterday_r as $row) {
 	$count_yesterday[$row['hour']] = $row['cnt'];
-}//while
+}//foreach
 
-while($row = $count_week_r->fetchArray()) {
+foreach ($count_week_r as $row) {
 	$d = new DateTime('now', new DateTimeZone("America/New_York"));
 	$d->setTimestamp($row['ts']);
 	$count_week[$d->format('l')]++;
@@ -34,13 +34,13 @@ while($row = $count_week_r->fetchArray()) {
 	$average_week_i[$d->format('l')][0] = $average_week_i[$d->format('l')][0] + ($row['speed'] * 0.621372);
 	$average_week_i[$d->format('l')][1]++;
 	$average_week[$d->format('l')] = round($average_week_i[$d->format('l')][0] / $average_week_i[$d->format('l')][1]);
-}//while
+}//foreach
 
-while($row = $count_yesterweek_r->fetchArray()) {
+foreach ($count_yesterweek_r as $row) {
 	$d = new DateTime('now', new DateTimeZone("America/New_York"));
 	$d->setTimestamp($row['ts']);
 	$count_yesterweek[$d->format('l')]++;
-}//while
+}//foreach
 
 // pad arrays
 for ($i = 0; $i < 24; $i++) {
@@ -140,13 +140,14 @@ ksort($count_yesterday);
 										<th>Time</th>
 										<th>Speed</th>
 										<th>Direction</th>
+										<th>Video</th>
 										<th>Image</th>
 										<th>Plate</th>
 									</tr>
 
 									<?php
 									$limit = 20;
-									while($row = $count_week_r->fetchArray()) {
+									foreach ($count_week_r as $row) {
 										$limit--;
 										$d = new DateTime('now', new DateTimeZone("America/New_York"));
 										$d->setTimestamp($row['ts']);
@@ -157,17 +158,18 @@ ksort($count_yesterday);
 										<td><?php echo $d->format('h:i A'); ?></td>
 										<td><?php echo floor($row['speed'] * 0.621372); ?> mph</td>
 										<td><?php echo $row['direction']; ?></td>
+										<td></td>
+										<td><?php echo empty($row['image']) ? '-' : $row['image']; ?></td>
 										<td><?php echo empty($row['plate']) ? '-' : $row['plate']; ?></td>
-										<td><?php echo empty($row['image1']) ? '-' : $row['image1']; ?></td>
 									</tr>
-		
+
 									<?php
 										if ($limit == 0) {
 											break;
 										}//if
 									}//while
 									?>
-		
+
 								</table>
 							</div>
 						</div>
@@ -186,7 +188,7 @@ ksort($count_yesterday);
   	const count_week_y = <?php echo json_encode(array_values($count_week)); ?>;
   	const count_yesterweek_y = <?php echo json_encode(array_values($count_yesterweek)); ?>;
 	const average_week_y = <?php echo json_encode(array_values($average_week)); ?>;
-  
+
     new Chart("g_count_today", {
       type: "bar",
       data: {

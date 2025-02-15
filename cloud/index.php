@@ -1,18 +1,28 @@
 <?php
-// import libs
+// read config
+$conf_file = 'config.json';
+
+if (file_exists($conf_file)) {
+        $json = file_get_contents($conf_file);
+
+        if ($conf = json_decode($json, TRUE)) {
+        }//if
+}//if
+
+// include DB
 include 'DB.php';
-$db = new DB('speed_cloud.db');
+$db = new DB($conf['host'], $conf['username'], $conf['password'], $conf['database']);
 
 // get global vars
 $location = empty($_GET['l']) ? 1 : (int)$_GET['l'];
-$week = $_GET['week'];
-$year = $_GET['year'];
+$week = (int)$_GET['week'];
+$year = (int)$_GET['year'];
 $_route = !empty($_GET['r']) ? trim($_GET['r']) : 'home';
 
 if (!empty($week) && ($week != date('W'))) {
 	$day_offset = ($week - 1) * 7;
 	$dayy_offset = ($week - 2) * 7;
-	
+
 	$dtw = new DateTime(date($year . '-01-01 00:00:00'), new DateTimeZone("America/New_York"));
 	$dtyw = new DateTime(date($year . '-01-01 00:00:00'), new DateTimeZone("America/New_York"));
 
@@ -20,8 +30,8 @@ if (!empty($week) && ($week != date('W'))) {
 	$dtyw->modify("+{$dayy_offset} days");
 
 	// get counts week
-	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dtw->getTimestamp(), $dtw->getTimestamp() + 604800]);
-	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE 1=0');
+	$count_today_r = $db->fetchAllAssoc($db->query('SELECT hour, count(detection_id) as cnt FROM detections WHERE ts >= ' . $dtw->getTimestamp() . ' AND ts < ' . ($dtw->getTimestamp()+604800) . ' GROUP BY hour'));
+	$count_yesterday_r = $db->fetchAllAssoc($db->query('SELECT hour, count(detection_id) as cnt FROM detections WHERE 1=0'));
 } else {
 	$dtw = new DateTime('Monday this week 00:00:00', new DateTimeZone("America/New_York"));
 	$dtyw = new DateTime('Monday previous week 00:00:00', new DateTimeZone("America/New_York"));
@@ -30,11 +40,11 @@ if (!empty($week) && ($week != date('W'))) {
 	$dty = new DateTime('yesterday 00:00:00', new DateTimeZone("America/New_York"));
 
 	// get counts today and yesterday
-	$count_today_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dt->getTimestamp(), $dt->getTimestamp() + 86400]);
-	$count_yesterday_r = $db->fetchResult('SELECT hour, count(ts) as cnt FROM detections WHERE ts >= ? AND ts < ? GROUP BY hour', [$dty->getTimestamp(), $dty->getTimestamp() + 86400]);
-}
+	$count_today_r = $db->fetchAllAssoc($db->query('SELECT hour, count(detection_id) as cnt FROM detections WHERE ts >= ' . $dt->getTimestamp() . ' AND ts < ' . ($dt->getTimestamp()+86400) . ' GROUP BY hour'));
+	$count_yesterday_r = $db->fetchAllAssoc($db->query('SELECT hour, count(detection_id) as cnt FROM detections WHERE ts >= ' . $dty->getTimestamp() . ' AND ts < ' . ($dty->getTimestamp()+86400) . ' GROUP BY hour'));
+}//if
 
-$count_total_r = $db->fetchRow('SELECT COUNT(*) as CNT FROM detections WHERE ts >= ? AND ts < ? ORDER BY ts DESC', [$dtw->getTimestamp(), $dtw->getTimestamp()+604800]);
+$count_total_r = $db->fetchAssoc($db->query('SELECT COUNT(*) as CNT FROM detections WHERE ts >= ' . $dtw->getTimestamp() . ' AND ts < ' . ($dtw->getTimestamp()+604800)));
 $count_total = $count_total_r['CNT'];
 
 // start output buffer
@@ -99,10 +109,10 @@ $_content = ob_get_clean();
 							<select name="location" id="location" style="display: block; width: 100%;">
 								<option>Select a location</option>
 								<?php
-								$locations_r = $db->fetchResult('SELECT rowid, * FROM locations');
+								$locations = $db->fetchAllAssoc($db->query('SELECT * FROM locations'));
 
-								while ($row = $locations_r->fetchArray()) {
-									echo '<option value="' . $row['rowid'] . '">' . $row['name'] . '</option>';
+								foreach ($locations as $row) {
+									echo '<option value="' . $row['location_id'] . '">' . $row['name'] . '</option>';
 								}//while
 								?>
 							</select>
@@ -116,7 +126,7 @@ $_content = ob_get_clean();
 					<div class="col-md-6">
 						<p class="p-3 m-0"><b>
 							<?php
-							$r = $db->fetchRow('SELECT * FROM locations WHERE rowid = ' . $location);
+							$r = $db->fetchAssoc($db->query('SELECT * FROM locations WHERE location_id = ' . $location));
 							echo $r['name'];
 							?>
 						</b></p>
@@ -125,10 +135,10 @@ $_content = ob_get_clean();
 						<p class="p-3 m-0 text-end">Storage: <?php echo $r['storage']; ?>% free</p>
 					</div>
 					<div class="col-md-2">
-						<p class="p-3 m-0 text-end">Detections: <a href="/?r=detections&l=<?php echo $location; ?>"><?php echo $count_total; ?></a></p>
+						<p class="p-3 m-0 text-end">Detections: <a href="/?r=detections&l=<?php echo $location; ?>&week=<?php echo $week; ?>&year=<?php echo $year; ?>"><?php echo $count_total; ?></a></p>
 					</div>
 					<div class="col-md-2">
-						<p class="p-3 m-0 text-end">Speed limit: <a href="/?r=settings"><?php echo round($r['speedlimit'] * 0.621371); ?> mph</a></p>
+						<p class="p-3 m-0 text-end">Speed limit: <a href="/?r=settings"><?php echo round($r['speed_limit'] * 0.621371); ?> mph</a></p>
 					</div>
 				</div>
 			</div>
@@ -139,7 +149,7 @@ $_content = ob_get_clean();
 
 			<div class="mb-4 rounded bg-body-tertiary">
 				<div class="row">
-					<div class="col-md-12"><p class="p-2 m-0">Copyright &copy; 2024 LUCEON LLC | All rights reserved | Made in Florida with Love</p></div>
+					<div class="col-md-12"><p class="p-2 m-0">Copyright &copy; 2024 LUCEON LLC | All rights reserved | Made in Florida &#127796; with Love &#129505;</p></div>
 				</div>
 			</div>
 		</div>

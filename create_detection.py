@@ -68,12 +68,7 @@ cur.execute(f'INSERT INTO detections VALUES ("{ts}", {dt.month}, {dt.day}, {dt.h
 con.commit()
 con.close()
 
-# post detection to server
-"""
-	('car', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
-	('plate', ('custom_file_name.zip', open('myfile.zip', 'rb'))),
-"""
-
+# data to upload
 data = {"ts":ts, "radar":radar, "speed":speed, "direction":direction, "location":config["settings"]["location"], "camera":camera, "storage":int((free/total)*100)}
 
 syslog.syslog(syslog.LOG_INFO, f'Logging detection to URL {config["settings"]["api"]["post_url"]} for radar {radar}.')
