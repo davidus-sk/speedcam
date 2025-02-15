@@ -44,7 +44,7 @@ switch ($tf) {
 
     foreach ($result as $row) {
       echo "{$row['hour']},{$row['cnt']}\r\n";
-    }//while
+    }//foreach
   } break;
 
   // week - broken down by DoW
@@ -64,7 +64,7 @@ switch ($tf) {
     foreach ($result as $row) {
       $dtw->setTimestamp($row['ts']);
       $data[$dtw->format('l')] = empty($data[$dtw->format('l')]) ? 1 : $data[$dtw->format('l')] + 1;
-    }//while
+    }//foreach
 
     foreach ($data as $day=>$cnt) {
       echo "{$day},{$cnt}\r\n";
@@ -85,13 +85,13 @@ switch ($tf) {
     echo "Report for " . $dtw->format('Y') . " week #" . $dtw->format('W') . "\r\n";
     echo "Year,Month,Day,Time,Speed,Direction\r\n";
 
-    while($result as $row) {
+    foreach ($result as $row) {
       $speed = round($row['speed'] * 0.621372);
       $dtw->setTimestamp($row['ts']);
       $time = $dtw->format("H:i:s");
 
       echo "{$row['year']},{$row['month']},{$row['day']},{$time},{$speed},{$row['direction']}\r\n";
-    }//while
+    }//foreach
   } break;
 
   // error
