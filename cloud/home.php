@@ -130,7 +130,7 @@ ksort($count_yesterday);
 					<div class="card">
 						<div class="card-header">
 							<b>Last 20 Detections</b>
-							<span class="float-end"><a href="/?r=detections&l=<?php echo $location; ?>">List offenders</a></span>
+							<span class="float-end"><a href="/?r=detections&l=<?php echo $location; ?>&week=<?php echo $week; ?>&year=<?php echo $year; ?>">List offenders</a></span>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
@@ -143,7 +143,7 @@ ksort($count_yesterday);
 										<th>Image</th>
 										<th>Plate</th>
 									</tr>
-		
+
 									<?php
 									$limit = 20;
 									while($row = $count_week_r->fetchArray()) {
@@ -151,7 +151,7 @@ ksort($count_yesterday);
 										$d = new DateTime('now', new DateTimeZone("America/New_York"));
 										$d->setTimestamp($row['ts']);
 									?>
-		
+
 									<tr>
 										<td><?php echo $d->format('m/d/Y'); ?></td>
 										<td><?php echo $d->format('h:i A'); ?></td>

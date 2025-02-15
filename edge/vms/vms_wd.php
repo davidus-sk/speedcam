@@ -37,7 +37,7 @@ while (TRUE) {
 
 			if ($ts < (time() - 10)) {
 				syslog(LOG_INFO, "Last viedo file is older than 10 seconds. Killing process for: {$cam['url']}.");
-				`/usr/bin/pkill -f "\-[i] {$cam['url']}"`
+				`/usr/bin/pkill -f "\-[i] {$cam['url']}"`;
 			}//if
 		}//if
 	}//foreach
