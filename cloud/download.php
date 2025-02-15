@@ -55,7 +55,7 @@ switch ($tf) {
       $dtw = new DateTime($year . 'W' . sprintf("%02d", $week) . ' 00:00:00', new DateTimeZone("America/New_York"));
     }
 
-    $result = $db->fetchAllAssoc($db->query('SELECT * FROM detections WHERE ts >= ' . $dtw->getTimestamp() . ' AND ts < ' . ($dtw->getTimestamp()+604800])));
+    $result = $db->fetchAllAssoc($db->query('SELECT * FROM detections WHERE ts >= ' . $dtw->getTimestamp() . ' AND ts < ' . ($dtw->getTimestamp()+604800)));
 
     echo "Report for " . $dtw->format('Y') . " week #" . $dtw->format('W') . "\r\n";
     echo "Day,Count\r\n";
