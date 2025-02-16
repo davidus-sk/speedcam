@@ -78,10 +78,10 @@ if (!is_null($location) && !is_null($camera) && !is_null($ts) && $_FILES['video'
 		mkdir('videos');
 	}//if
 
-	$path = 'videos/' . $_FILES['userfile']['name'];
+	$path = 'videos/' . $_FILES['video']['name'];
 
-	if (move_uploaded_file($_FILES['userfile']['tmp_name'], $path)) {
-		$db->query("UPDATE detections SET video = '{$_FILES['userfile']['name']}' WHERE location = {$location} AND camera = {$camera} AND ts = {$ts}");
+	if (move_uploaded_file($_FILES['video']['tmp_name'], $path)) {
+		$db->query("UPDATE detections SET video = '{$_FILES['video']['name']}' WHERE location = {$location} AND camera = {$camera} AND ts = {$ts}");
 		echo json_encode(['status' => 'OK']);
 	} else {
 		echo json_encode(['status' => 'ERROR', 'msg' => 'VIDEO NOT SAVED', 'method' => $_SERVER['REQUEST_METHOD']]);
