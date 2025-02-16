@@ -94,9 +94,9 @@ $_content = ob_get_clean();
 							<?php
 							for ($i=date('W') - 13; $i<=date('W'); $i++) {
 								if ($i >= 1) {
-									echo '<a href="/?r=' . $_GET['r'] . '&week=' . $i . '&year=' . date('Y') . '" class="badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
+									echo '<a href="/?r=' . $_GET['r'] . '&week=' . $i . '&year=' . date('Y') . '" class="text-decoration-none badge ' . ($i==$week ? ' text-bg-primary ' : ($i==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . $i . '</a> ';
 								} else {
-									echo '<a href="/?r=' . $_GET['r'] . '&week=' . (52 + $i) . '&year=' . (date('Y') - 1) . '" class="badge ' . ((52 + $i)==$week ? ' text-bg-primary ' : ((52 + $i)==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . (52 + $i) . '</a> ';
+									echo '<a href="/?r=' . $_GET['r'] . '&week=' . (52 + $i) . '&year=' . (date('Y') - 1) . '" class="text-decoration-none badge ' . ((52 + $i)==$week ? ' text-bg-primary ' : ((52 + $i)==date('W') ? ' text-bg-secondary ' : 'text-bg-light')) . '">' . (52 + $i) . '</a> ';
 								}//if
 							}//for
 							?>
