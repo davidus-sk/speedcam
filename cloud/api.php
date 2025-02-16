@@ -44,34 +44,35 @@ if (!is_null($storage)) {
 
 // save data
 if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar) && !is_null($location)) {
-  // date time
-  $dt = new DateTime();
-  $dt->setTimezone(new DateTimeZone("America/New_York"));
-  $dt->setTimestamp($ts);
+	// date time
+	$dt = new DateTime();
+	$dt->setTimezone(new DateTimeZone("America/New_York"));
+	$dt->setTimestamp($ts);
 
-  // init the schema
-  $db->createSchemas();
+	// init the schema
+	$db->createSchemas();
 
-  // check if we have this entry already
-  $row = $db->fetchAssoc($db->query('SELECT * FROM detections WHERE camera_id = ' . $camera . ' AND location_id = ' . $location . ' AND ts = ' . $ts));
+	// check if we have this entry already
+	$row = $db->fetchAssoc($db->query('SELECT * FROM detections WHERE camera_id = ' . $camera . ' AND location_id = ' . $location . ' AND ts = ' . $ts));
 
-  if (!empty($row)) {
-    echo json_encode(['status' => 'ERROR', 'msg' => 'EXISTS', 'method' => $_SERVER['REQUEST_METHOD']]);
-    exit();
-  }//if
+	if (!empty($row)) {
+		echo json_encode(['status' => 'ERROR', 'msg' => 'EXISTS', 'method' => $_SERVER['REQUEST_METHOD']]);
+		exit();
+	}//if
 
-  // store data
-  $db->query("INSERT INTO detections VALUES ({$location}, {$ts}, " . (int)$dt->format("Y") . ", " . (int)$dt->format("n") . ", " . (int)$dt->format("j") . ", " . (int)$dt->format("G") . ", {$camera}, {$radar}, {$speed}, '{$direction}', null, null, null");
-  $insertId = $db->insertId();
+	// store data
+	$db->query("INSERT INTO detections (location_id, ts, year, month, day, hour, camera_id, radar_id, speed, direction, plate, image, video)
+		VALUES ({$location}, {$ts}, " . (int)$dt->format("Y") . ", " . (int)$dt->format("n") . ", " . (int)$dt->format("j") . ", " . (int)$dt->format("G") . ", {$camera}, '{$radar}', {$speed}, '{$direction}', null, null, null)");
+	$insertId = $db->insertId();
 
-  if ($insertId) {
-    $row = $db->fetchAssoc($db->query('SELECT * FROM locations WHERE location_id = ' . $location));
-    echo json_encode(['status' => 'OK', 'rowid' => $insertId, 'speedlimit' => $row['speed_limit'], 'flashers' => (bool)$row['flashers']]);
-  } else {
-    echo json_encode(['status' => 'ERROR', 'msg' => 'NO ROW ID', 'method' => $_SERVER['REQUEST_METHOD']]);
-  }//if
+	if ($insertId) {
+		$row = $db->fetchAssoc($db->query('SELECT * FROM locations WHERE location_id = ' . $location));
+		echo json_encode(['status' => 'OK', 'rowid' => $insertId, 'speedlimit' => $row['speed_limit'], 'flashers' => (bool)$row['flashers']]);
+	} else {
+		echo json_encode(['status' => 'ERROR', 'msg' => 'NO ROW ID', 'method' => $_SERVER['REQUEST_METHOD']]);
+	}//if
 
-  exit();
+	exit();
 }//if
 
 echo json_encode(['status' => 'ERROR', 'msg' => 'MISSING DATA', 'method' => $_SERVER['REQUEST_METHOD']]);
