@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 	if (!is_null($location)) {
 		$row = $db->fetchAssoc($db->query('SELECT * FROM locations WHERE location_id = ' . $location));
-		echo json_encode(['status' => 'OK', 'speedlimit' => $row['speed_limit'], 'flashers' => (bool)$row['flashers']]);
+		echo json_encode(['status' => 'OK', 'speedlimit' => (float)$row['speed_limit'], 'flashers' => (bool)$row['flashers']]);
 		exit();
 	}//if
 
