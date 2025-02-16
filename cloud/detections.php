@@ -34,7 +34,7 @@ $detections = $db->fetchAllAssoc($db->query('SELECT * FROM detections WHERE ts >
 							<td><?php echo $d->format('h:i A'); ?></td>
 							<td><?php echo floor($row['speed'] * 0.621372); ?> mph</td>
 							<td><?php echo $row['direction']; ?></td>
-							<td><?php echo empty($row['video']) ? '-' : $row['video']; ?></td>
+							<td><?php echo empty($row['video']) ? '-' : '<a href="/videos/' . $row['video'] . '">play</a>'; ?></td>
 							<td><?php echo empty($row['image']) ? '-' : $row['image']; ?></td>
 							<td><?php echo empty($row['plate']) ? '-' : $row['plate']; ?></td>
 						</tr>
