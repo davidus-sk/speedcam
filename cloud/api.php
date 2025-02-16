@@ -75,4 +75,19 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar) &
 	exit();
 }//if
 
+// save video
+if (!is_null($location) && !is_null($camera) && !is_null($ts) && $_FILES['video']['error'] == UPLOAD_ERR_OK) {
+	$path = 'videos/' . $_FILES['userfile']['name'];
+
+	if (move_uploaded_file($_FILES['userfile']['tmp_name'], $path)) {
+		$db->query("UPDATE detections SET video = '{$_FILES['userfile']['name']}' WHERE location = {$location} AND camera = {$camera} AND ts = {$ts}");
+		echo json_encode(['status' => 'OK']);
+	} else {
+		echo json_encode(['status' => 'ERROR', 'msg' => 'VIDEO NOT SAVED', 'method' => $_SERVER['REQUEST_METHOD']]);
+	}//if
+
+	exit();
+}//if
+
+// final word
 echo json_encode(['status' => 'ERROR', 'msg' => 'MISSING DATA', 'method' => $_SERVER['REQUEST_METHOD']]);

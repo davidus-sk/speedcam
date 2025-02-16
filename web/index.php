@@ -236,7 +236,7 @@ ksort($cam1_day_speed);
 							<th>Speed</th>
 							<th>Video</th>
 						</tr>
-						
+
 						<?php
 						$r = $db->query('SELECT * FROM detections WHERE camera = 0 ORDER BY time DESC LIMIT 10');
 						while ($row = $r->fetchArray()) {
@@ -270,7 +270,7 @@ ksort($cam1_day_speed);
 							<th>Speed</th>
 							<th>Video</th>
 						</tr>
-						
+
 						<?php
 						$r = $db->query('SELECT * FROM detections WHERE camera = 1 ORDER BY time DESC LIMIT 10');
 						while ($row = $r->fetchArray()) {
