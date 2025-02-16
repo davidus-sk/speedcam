@@ -64,7 +64,7 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar) &
 
 	if ($insertId) {
 		$row = $db->fetchAssoc($db->query('SELECT * FROM locations WHERE location_id = ' . $location));
-		echo json_encode(['status' => 'OK', 'rowid' => $insertId, 'speedlimit' => $row['speed_limit'], 'flashers' => (bool)$row['flashers']]);
+		echo json_encode(['status' => 'OK', 'rowid' => $insertId, 'speedlimit' => (float)$row['speed_limit'], 'flashers' => (bool)$row['flashers']]);
 	} else {
 		echo json_encode(['status' => 'ERROR', 'msg' => 'NO ROW ID', 'method' => $_SERVER['REQUEST_METHOD']]);
 	}//if
