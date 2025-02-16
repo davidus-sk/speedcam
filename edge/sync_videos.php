@@ -43,6 +43,7 @@ $db_vms = new DB('/data/vms_videos.db');
 
 			if (preg_match("/OK/", $response)) {
 				$db_det->query("UPDATE detections SET uploaded = 1 WHERE time = {$row['camera']}");
+				syslog(LOG_INFO, "File {$video['filename']} uploaded: " . $response);
 			} else {
 				syslog(LOG_ERR, "File {$video['filename']} not uploaded: " . $response);
 			}//if
