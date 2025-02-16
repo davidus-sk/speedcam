@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 
 include dirname(__FILE__) . '/DB.php';
@@ -19,8 +20,8 @@ if (file_exists($conf_file) && filesize($conf_file) > 0) {
 $db_det = new SQLite3('/data/speed.db', SQLITE3_OPEN_READONLY);
 $db_vms = new SQLite3('/data/vms_videos.db', SQLITE3_OPEN_READONLY);
 
-while(TRUE) {
-	$detections = $db_det->query('SELECT * FROM detections WHERE time >= ' . (microtime(true) - 30) . ' AND uploaded = 0 ORDER BY time DESC LIMIT 10');
+//while(TRUE) {
+	$detections = $db_det->query('SELECT * FROM detections WHERE time >= ' . (microtime(true) - 120) . ' AND uploaded = 0 ORDER BY time DESC LIMIT 10');
 
 	while ($row = $detections->fetchArray()) {
 		$videos = $db_vms->query('SELECT * FROM videos WHERE camera = ' . $row['camera'] . ' AND ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
@@ -52,5 +53,12 @@ while(TRUE) {
 	}//while
 
 
-	sleep(5);
-}//while
+//	sleep(5);
+//}//while
+
+
+$db_det->close();
+$db_vms->close();
+
+
+closelog();

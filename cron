@@ -4,6 +4,7 @@
 */2 *	* * *	root	/app/speed/edge/sync_settings.py
 * *	* * *	root	/app/speed/edge/vms/vms_database.php
 * *	* * *	root	/app/speed/edge/vms/vms_record.php
+* *	* * *	root	/app/speed/edge/sync_videos.php
 #* *	* * *	root	/app/speed/infer.py
 #* *	* * *	root	/app/speed/grab_frames_video.php left
 #* *	* * *	root	/app/speed/grab_frames_video.php right
