@@ -21,7 +21,7 @@ $db_det = new DB('/data/speed.db');
 $db_vms = new DB('/data/vms_videos.db');
 
 //while(TRUE) {
-	$detections = $db_det->query('SELECT * FROM detections WHERE time >= ' . (time() - 300) . ' AND uploaded = 0 ORDER BY time DESC');
+	$detections = $db_det->query('SELECT *,rowid FROM detections WHERE time >= ' . (time() - 300) . ' AND uploaded = 0 ORDER BY time DESC');
 
 	while ($row = $detections->fetchArray()) {
 		$video = $db_vms->fetchRow('SELECT * FROM videos WHERE camera = ' . $row['camera'] . ' AND ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
@@ -42,7 +42,7 @@ $db_vms = new DB('/data/vms_videos.db');
 			curl_close($ch);
 
 			if (preg_match("/OK/", $response)) {
-				$db_det->query("UPDATE detections SET uploaded = 1 WHERE time = {$row['camera']}");
+				$db_det->query("UPDATE detections SET uploaded = 1 WHERE rowid = {$row['rowid']}");
 				syslog(LOG_INFO, "File {$video['filename']} uploaded: " . $response);
 			} else {
 				syslog(LOG_ERR, "File {$video['filename']} not uploaded: " . $response);
