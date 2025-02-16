@@ -49,9 +49,6 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar) &
 	$dt->setTimezone(new DateTimeZone("America/New_York"));
 	$dt->setTimestamp($ts);
 
-	// init the schema
-	$db->createSchemas();
-
 	// check if we have this entry already
 	$row = $db->fetchAssoc($db->query('SELECT * FROM detections WHERE camera_id = ' . $camera . ' AND location_id = ' . $location . ' AND ts = ' . $ts));
 
