@@ -21,7 +21,7 @@ $db_det = new DB('/data/speed.db');
 $db_vms = new DB('/data/vms_videos.db');
 
 //while(TRUE) {
-	$detections = $db_det->query('SELECT * FROM detections WHERE time >= ' . (time() - 120) . ' AND uploaded = 0 ORDER BY time DESC');
+	$detections = $db_det->query('SELECT * FROM detections WHERE time >= ' . (time() - 300) . ' AND uploaded = 0 ORDER BY time DESC');
 
 	while ($row = $detections->fetchArray()) {
 		$video = $db_vms->fetchRow('SELECT * FROM videos WHERE camera = ' . $row['camera'] . ' AND ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);

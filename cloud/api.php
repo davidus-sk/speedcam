@@ -74,6 +74,10 @@ if (!is_null($camera) && !is_null($speed) && !is_null($ts) && !is_null($radar) &
 
 // save video
 if (!is_null($location) && !is_null($camera) && !is_null($ts) && $_FILES['video']['error'] == UPLOAD_ERR_OK) {
+	if (!is_dir('videos')) {
+		mkdir('videos');
+	}//if
+
 	$path = 'videos/' . $_FILES['userfile']['name'];
 
 	if (move_uploaded_file($_FILES['userfile']['tmp_name'], $path)) {
