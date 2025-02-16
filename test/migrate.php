@@ -21,6 +21,8 @@ $db = new DB('../cloud/speed_cloud.db');
 $r = $db->fetchResult('SELECT * FROM detections ORDER BY ts ASC');
 
 while ($row = $r->fetchArray()) {
+	echo "{$row['ts']}\n";
+
 	$mysqli->query("INSERT INTO detections (location_id, ts, year, month, day, hour, camera_id, radar_id, speed, direction, plate, image, video) VALUES
 		({$row['location_id']}, {$row['ts']}, {$row['year']}, {$row['month']}, {$row['day']}, {$row['hour']}, {$row['camera_id']}, '{$row['radar_id']}', {$row['speed']}, '{$row['direction']}', null, null, null)");
 }//while
