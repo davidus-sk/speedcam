@@ -16,8 +16,6 @@ import sys
 import os
 import syslog
 import requests
-import sqlite3
-
 
 # start syslog
 syslog.openlog(logoption=syslog.LOG_PID)

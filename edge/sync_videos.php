@@ -17,15 +17,14 @@ if (file_exists($conf_file) && filesize($conf_file) > 0) {
 	exit();
 }//if
 
-$db_det = new SQLite3('/data/speed.db', SQLITE3_OPEN_READONLY);
-$db_vms = new SQLite3('/data/vms_videos.db', SQLITE3_OPEN_READONLY);
+$db_det = new DB('/data/speed.db');
+$db_vms = new DB('/data/vms_videos.db');
 
 //while(TRUE) {
-	$detections = $db_det->query('SELECT * FROM detections WHERE time >= ' . (microtime(true) - 120) . ' AND uploaded = 0 ORDER BY time DESC LIMIT 10');
+	$detections = $db_det->query('SELECT * FROM detections WHERE time >= ' . (time() - 120) . ' AND uploaded = 0 ORDER BY time DESC');
 
 	while ($row = $detections->fetchArray()) {
-		$videos = $db_vms->query('SELECT * FROM videos WHERE camera = ' . $row['camera'] . ' AND ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
-		$video = $videos->fetchArray();
+		$video = $db_vms->fetchRow('SELECT * FROM videos WHERE camera = ' . $row['camera'] . ' AND ts_from <= ' . $row['time'] . ' AND ts_to >= ' . $row['time']);
 
 		if ($video) {
 			syslog(LOG_INFO, "Found matching video: {$video['filename']}.");
@@ -43,11 +42,9 @@ $db_vms = new SQLite3('/data/vms_videos.db', SQLITE3_OPEN_READONLY);
 			curl_close($ch);
 
 			if (preg_match("/OK/", $response)) {
-				$db = new DB('/data/speed.db');
-				$db->query("UPDATE detections SET uploaded = 1 WHERE time = {$row['camera']}");
-				unset($db);
+				$db_det->query("UPDATE detections SET uploaded = 1 WHERE time = {$row['camera']}");
 			} else {
-				syslog(LOG_ERR, "File {$video['filename']} not uploaded.");
+				syslog(LOG_ERR, "File {$video['filename']} not uploaded: " . $response);
 			}//if
 		}//if
 	}//while
@@ -56,9 +53,9 @@ $db_vms = new SQLite3('/data/vms_videos.db', SQLITE3_OPEN_READONLY);
 //	sleep(5);
 //}//while
 
+// close DB handles
+unset($db_det);
+unset($db_vms);
 
-$db_det->close();
-$db_vms->close();
-
-
+// close log
 closelog();

@@ -13,6 +13,7 @@ class DB {
 	 */
 	public function __construct($databaseFile) {
 		$this->conn = new SQLite3($databaseFile);
+		$this->conn->busyTimeout(5000);
 
 		if (!$this->conn) {
 			die('Could not open database: ' . $this->conn->lastErrorMsg());
