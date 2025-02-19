@@ -1,10 +1,15 @@
 #!/usr/bin/php
 <?php
 
-// import libs
+// load libraries
 include dirname(__FILE__) . '/../DB.php';
-$db = new DB('/data/vms_videos.db');
+require(dirname(__FILE__) . '/../../common/functions.php');
 
+// run once
+run_once('/tmp/vms_database.pid', $fh);
+
+// db
+$db = new DB('/data/vms_videos.db');
 $db->query("CREATE TABLE IF NOT EXISTS videos (ts_from INTEGER, ts_to INTEGER, filename TEXT, camera INTEGER)");
 
 foreach (glob("/data/vms/*.mp4") as $path) {
@@ -32,7 +37,10 @@ foreach (glob("/data/vms/*.mp4") as $path) {
 	} else {
 		// too old - delete the file
 		if ($row['ts_from'] < (time() - 86400)) {
-			unlink($path);
+			if (file_exists($path)) {
+				unlink($path);
+			}//if
+
 			$db->query("DELETE FROM videos WHERE filename = ?", [$filename]);
 
 			echo "Deleting file from DB and drive: file={$filename}\n";

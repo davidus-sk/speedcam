@@ -7,6 +7,7 @@ openlog("vms_wd.php", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 // read config
 $conf = [];
 $conf_file = "/app/speed/config.json";
+$sleep = 1;
 
 if (file_exists($conf_file) && filesize($conf_file) > 0) {
 	$file = file_get_contents($conf_file);
@@ -38,10 +39,19 @@ while (TRUE) {
 			if ($ts < (time() - 10)) {
 				syslog(LOG_INFO, "Last viedo file is older than 10 seconds. Killing process for: {$cam['url']}.");
 				`/usr/bin/pkill -f "\-[i] {$cam['url']}"`;
+				$sleep = 60;
 			}//if
+		}//if
+
+		// if log is empty, restart
+		if (empty($lines)) {
+			syslog(LOG_INFO, "Log file is empty. Killing process for: {$cam['url']}.");
+			`/usr/bin/pkill -f "\-[i] {$cam['url']}"`;
+			$sleep = 60;
 		}//if
 	}//foreach
 
 	// rest
-	sleep(1);
+	sleep($sleep);
+	$sleep = 1;
 }//while
